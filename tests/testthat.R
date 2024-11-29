@@ -6,7 +6,7 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
-library(testthat)
-library(rdgidb)
+library(devtools)
 
-test_check("rdgidb")
+devtools::load_all()
+devtools::test()

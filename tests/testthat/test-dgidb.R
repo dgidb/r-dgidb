@@ -1,6 +1,5 @@
 library(testthat)
 library(microbenchmark)
-source("dgidb.R")
 
 test_that("Test: Get Gene Interactions", {
   gene_data <- get_interactions(c("BRAF", "PDGFRA"))
