@@ -1,12 +1,26 @@
-library(tidyr)
-library(data.table)
-library(httr)
-
 api_endpoint_url <- Sys.getenv(
   "DGIDB_API_URL",
   unset = "https://dgidb.org/api/graphql"
 )
 
+#' Perform an interaction look up for drugs or genes of interest
+#'
+#' @param terms drugs or genes for interaction look up
+#' @param use_processing placeholder
+#' @param search interaction search type. valid types are "drugs" or "genes"
+#' @param immunotherapy filter option for results that are used in immunotherapy
+#' @param antineoplastic filter option for results that are part of antineoplastic regimens # nolint: line_length_linter.
+#' @param sourcedbname filter option for specific database of interest
+#' @param pmid filter option for specific PMID
+#' @param interactiontype filter option for specific interaction types
+#' @param approved filter option for approved interactions
+#'
+#' @returns interaction results for terms
+#' @export
+#'
+#' @examples
+#' x <- c("BRAF","PDGFRA")
+#' get_interactions(x)
 get_interactions <- function(
     terms,
     use_processing = TRUE,
@@ -38,8 +52,8 @@ get_interactions <- function(
     stop("Search type must be specified using: search='drugs' or search='genes'") # nolint: line_length_linter.
   }
 
-  r <- POST(api_endpoint_url, body = list(query = query), encode = "json")
-  data <- content(r)$data
+  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
+  data <- httr::content(r)$data
 
   if (use_processing == TRUE) {
     if (search == "genes") {
@@ -55,9 +69,16 @@ get_interactions <- function(
   return(data)
 }
 
+#' Process Genes
+#'
+#' @param data genes for processing
+#'
+#' @returns processed genes
+#' @export
+#'
 process_gene <- function(data) {
   data <- data$genes$nodes
-  dt <- rbindlist(lapply(data, as.data.table))
+  dt <- data.table::rbindlist(lapply(data, data.table::as.data.table))
   dt <- tidyr::unnest_wider(dt, col = "interactions")
   dt <- tidyr::unnest_wider(dt, col = "drug", names_sep = "_")
 
@@ -101,7 +122,7 @@ process_gene <- function(data) {
 
   dt$geneCategories <- NULL
   dt$interactionClaims <- NULL
-  setnames(dt,
+  data.table::setnames(dt,
     old = c(
       "name",
       "interactionAttributes",
@@ -121,9 +142,16 @@ process_gene <- function(data) {
   return(dt)
 }
 
+#' Process Drugs
+#'
+#' @param data drugs to process
+#'
+#' @returns processed drugs
+#' @export
+#'
 process_drug <- function(data) {
   data <- data$drugs$nodes
-  dt <- rbindlist(lapply(data, as.data.table))
+  dt <- data.table::rbindlist(lapply(data, data.table::as.data.table))
   dt <- tidyr::unnest_wider(dt, col = "interactions")
   dt <- tidyr::unnest_wider(dt, col = "gene", names_sep = "_")
 
@@ -166,7 +194,7 @@ process_drug <- function(data) {
   })
 
   dt$interactionClaims <- NULL
-  setnames(dt,
+  data.table::setnames(dt,
     old = c(
       "name",
       "approved",
@@ -186,11 +214,18 @@ process_drug <- function(data) {
   return(dt)
 }
 
+#' Get all gene names present in DGIdb
+#'
+#' @returns full list of all genes
+#' @export
+#'
+#' @examples
+#' get_gene_list()
 get_gene_list <- function() {
   query <- "{\ngenes {\nnodes {\nname\n}\n}\n}"
-  r <- POST(api_endpoint_url, body = list(query = query), encode = "json")
+  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
   gene_list <- list()
-  raw_nodes <- content(r)$data$genes$nodes
+  raw_nodes <- httr::content(r)$data$genes$nodes
   for (i in seq_along(raw_nodes)) {
     gene_name <- raw_nodes[[i]]$name
     gene_list <- append(gene_list, gene_name)
@@ -199,12 +234,23 @@ get_gene_list <- function() {
   return(gene_list)
 }
 
+#' Perform a look up for ANDA/NDA applications for drug or drugs of interest
+#'
+#' @param terms drugs of interest
+#' @param use_processing placeholder
+#'
+#' @returns all ANDA/NDA applications for drugs of interest
+#' @export
+#'
+#' @examples
+#' terms <- "DOVITINIB"
+#' get_drug_applications(terms)
 get_drug_applications <- function(terms, use_processing = TRUE) {
   terms <- paste0("[\"", paste(toupper(terms), collapse = "\",\""), "\"]")
   query <- paste0("{\ndrugs(names: ", terms, ") {\nnodes{\nname \ndrugApplications {\nappNo\n}\n}\n}\n}\n") # nolint: line_length_linter.
 
-  r <- POST(api_endpoint_url, body = list(query = query), encode = "json")
-  data <- content(r)
+  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
+  data <- httr::content(r)
 
   if (use_processing == TRUE) {
     data <- process_drug_applications(data)
@@ -213,6 +259,13 @@ get_drug_applications <- function(terms, use_processing = TRUE) {
   return(data)
 }
 
+#' Process Drug Applications
+#'
+#' @param data drug applications to process
+#'
+#' @returns processed drug applications
+#' @export
+#'
 process_drug_applications <- function(data) {
   0
   drug_list <- c()
@@ -236,6 +289,13 @@ process_drug_applications <- function(data) {
   return(dataframe)
 }
 
+#' OpenFDA Data
+#'
+#' @param dataframe placeholder
+#'
+#' @returns placeholder
+#' @export
+#'
 openfda_data <- function(dataframe) {
   openfda_base_url <- "https://api.fda.gov/drug/drugsfda.json?search=openfda.application_number:" # nolint: line_length_linter.
   terms <- as.list(dataframe$application)
@@ -243,17 +303,17 @@ openfda_data <- function(dataframe) {
 
   for (i in seq_along(terms)) {
     term <- terms[[i]]
-    r <- GET(
+    r <- httr::GET(
       paste0(
         openfda_base_url,
         "\"", term, "\""
       ),
-      add_headers("User-Agent" = "Custom")
+      httr::add_headers("User-Agent" = "Custom")
     )
 
     tryCatch(
       {
-        results <- content(r, "parsed")$results
+        results <- httr::content(r, "parsed")$results
         if (length(results) > 0 && !is.null(results[[1]]$products)) {
           products <- results[[1]]$products
           f <- vector("character", length(products))
