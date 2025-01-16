@@ -22,7 +22,8 @@ RoxygenNote: 7.3.2
 Imports: 
     data.table,
     httr,
-    tidyr
+    readr,
+    tidyr,
 Suggests: 
     devtools,
     microbenchmark,

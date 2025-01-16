@@ -42,6 +42,6 @@ interaction results for terms
 Perform an interaction look up for drugs or genes of interest
 }
 \examples{
-x <- c("BRAF","PDGFRA")
+x <- c("BRAF", "PDGFRA")
 get_interactions(x)
 }

@@ -3,6 +3,99 @@ api_endpoint_url <- Sys.getenv(
   unset = "https://dgidb.org/api/graphql"
 )
 
+group_attributes <- function(row) {
+  grouped_dict <- list()
+  for (attr in row) {
+    if (is.null(attr$value)) {
+      next
+    } else if (attr$name %in% names(grouped_dict)) {
+      grouped_dict[[attr$name]] <- append(grouped_dict[[attr$name]], attr$value)
+    } else {
+      grouped_dict[[attr$name]] <- list(attr$value)
+    }
+  }
+  return(grouped_dict)
+}
+
+backfill_dicts <- function(col) {
+  keys <- unique(unlist(lapply(col, names)))
+  result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
+  return(result)
+}
+
+get_drugs <- function(
+    terms,
+    immunotherapy = NULL,
+    antineoplastic = NULL,
+    api_url = NULL) {
+  params <- list(names = terms)
+  if (!is.null(immunotherapy)) {
+    params$immunotherapy <- immunotherapy
+  }
+  if (!is.null(antineoplastic)) {
+    params$antineoplastic <- antineoplastic
+  }
+
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_drugs.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = params),
+    encode = "json",
+    config = httr::add_headers(c("dgidb-client-name" = "dgipy"))
+  )
+  result <- httr::content(response)$data
+
+  output <- list(
+    drug_name = list(),
+    drug_concept_id = list(),
+    drug_aliases = list(),
+    drug_attributes = list(),
+    drug_is_antineoplastic = list(),
+    drug_is_immunotherapy = list(),
+    drug_is_approved = list(),
+    drug_approval_ratings = list(),
+    drug_fda_applications = list()
+  )
+
+  for (match in result$drugs$nodes) {
+    output$drug_name <- append(
+      output$drug_name, match$name
+    )
+    output$drug_concept_id <- append(
+      output$drug_concept_id, match$conceptId
+    )
+    output$drug_aliases <- list(append(
+      output$drug_aliases,
+      lapply(match$drugAliases, function(a) a$alias)
+    ))
+    output$drug_attributes <- list(append(
+      output$drug_attributes, group_attributes(match$drugAttributes)
+    ))
+    output$drug_is_antineoplastic <- append(
+      output$drug_is_antineoplastic, match$antiNeoplastic
+    )
+    output$drug_is_immunotherapy <- append(
+      output$drug_is_immunotherapy, match$immunotherapy
+    )
+    output$drug_is_approved <- append(
+      output$drug_is_approved, match$approved
+    )
+    output$drug_approval_ratings <- list(append(
+      output$drug_approval_ratings,
+      lapply(match$drugApprovalRatings, function(r) {
+        list(rating = r$rating, source = r$source$sourceDbName)
+      })
+    ))
+    output$drug_fda_applications <- list(append(
+      output$drug_fda_applications,
+      lapply(match$drugApplications, function(app) app$appNo)
+    ))
+  }
+  output$drug_attributes <- backfill_dicts(output$drug_attributes)
+  return(output)
+}
+
 #' Perform an interaction look up for drugs or genes of interest
 #'
 #' @param terms drugs or genes for interaction look up
@@ -19,7 +112,7 @@ api_endpoint_url <- Sys.getenv(
 #' @export
 #'
 #' @examples
-#' x <- c("BRAF","PDGFRA")
+#' x <- c("BRAF", "PDGFRA")
 #' get_interactions(x)
 get_interactions <- function(
     terms,
