@@ -124,7 +124,6 @@ get_genes <- function(terms, api_url = NULL) {
     output$gene_attributes <- append(
       output$gene_attributes, list(group_attributes(match$geneAttributes))
     )
-    View(output$gene_attributes)
   }
   output$gene_attributes <- backfill_dicts(output$gene_attributes)
   return(output)
@@ -199,40 +198,45 @@ get_interactions <- function(
   for (result in results) {
     for (interaction in result$interactions) {
       output$gene_name <- append(
-        output$gene_name, match$name
+        output$gene_name, interaction$gene$name
       )
       output$gene_concept_id <- append(
-        output$gene_concept_id, match$conceptId
+        output$gene_concept_id, interaction$gene$conceptId
       )
-      output$gene_long_name <- list(append(
-        output$gene_long_name,
-        lapply(match$drugAliases, function(a) a$alias)
-      ))
-      output$drug_attributes <- list(append(
-        output$drug_attributes, group_attributes(match$drugAttributes)
-      ))
-      output$drug_is_antineoplastic <- append(
-        output$drug_is_antineoplastic, match$antiNeoplastic
+      output$gene_long_name <- append(
+        output$gene_long_name, interaction$gene$longName
       )
-      output$drug_is_immunotherapy <- append(
-        output$drug_is_immunotherapy, match$immunotherapy
+      output$drug_name <- append(
+        output$drug_name, interaction$drug$name
       )
-      output$drug_is_approved <- append(
-        output$drug_is_approved, match$approved
+      output$drug_concept_id <- append(
+        output$drug_concept_id, interaction$drug$conceptId
       )
-      output$drug_approval_ratings <- list(append(
-        output$drug_approval_ratings,
-        lapply(match$drugApprovalRatings, function(r) {
-          list(rating = r$rating, source = r$source$sourceDbName)
-        })
-      ))
-      output$drug_fda_applications <- list(append(
-        output$drug_fda_applications,
-        lapply(match$drugApplications, function(app) app$appNo)
-      ))
+      output$drug_approved <- append(
+        output$drug_approved, interaction$drug$approved
+      )
+      output$interaction_score <- append(
+        output$interaction_score, interaction$interactionScore
+      )
+      output$interaction_attributes <- append(
+        output$interaction_attributes,
+        list(group_attributes(interaction$interactionAttributes))
+      )
+      pubs <- list()
+      sources <- list()
+      for (claim in interaction$interactionClaims) {
+        sources <- append(sources, claim$source$sourceDbName)
+        pubs <- append(pubs, lapply(claim$publications, function(p) p$pmid))
+      }
+      output$interaction_pmids <- append(
+        output$interaction_pmids, list(pubs)
+      )
+      output$interaction_sources <- append(
+        output$interaction_sources, list(sources)
+      )
     }
   }
-  output$drug_attributes <- backfill_dicts(output$drug_attributes)
+  output$interaction_attributes <- backfill_dicts(output$interaction_attributes)
   return(output)
 }
 
