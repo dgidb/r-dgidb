@@ -64,13 +64,12 @@ get_drugs <- function(
     output$drug_concept_id <- append(
       output$drug_concept_id, match$conceptId
     )
-    output$drug_aliases <- list(append(
-      output$drug_aliases,
-      lapply(match$drugAliases, function(a) a$alias)
-    ))
-    output$drug_attributes <- list(append(
-      output$drug_attributes, group_attributes(match$drugAttributes)
-    ))
+    output$drug_aliases <- append(
+      output$drug_aliases, list(lapply(match$drugAliases, function(a) a$alias))
+    )
+    output$drug_attributes <- append(
+      output$drug_attributes, list(group_attributes(match$drugAttributes))
+    )
     output$drug_is_antineoplastic <- append(
       output$drug_is_antineoplastic, match$antiNeoplastic
     )
@@ -80,16 +79,16 @@ get_drugs <- function(
     output$drug_is_approved <- append(
       output$drug_is_approved, match$approved
     )
-    output$drug_approval_ratings <- list(append(
+    output$drug_approval_ratings <- append(
       output$drug_approval_ratings,
-      lapply(match$drugApprovalRatings, function(r) {
+      list(lapply(match$drugApprovalRatings, function(r) {
         list(rating = r$rating, source = r$source$sourceDbName)
-      })
-    ))
-    output$drug_fda_applications <- list(append(
+      }))
+    )
+    output$drug_fda_applications <- append(
       output$drug_fda_applications,
-      lapply(match$drugApplications, function(app) app$appNo)
-    ))
+      list(lapply(match$drugApplications, function(app) app$appNo))
+    )
   }
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
   return(output)
@@ -119,13 +118,13 @@ get_genes <- function(terms, api_url = NULL) {
     output$gene_concept_id <- append(
       output$gene_concept_id, match$conceptId
     )
-    output$gene_aliases <- list(append(
-      output$gene_aliases,
-      lapply(match$geneAliases, function(a) a$alias)
-    ))
-    output$gene_attributes <- list(append(
-      output$gene_attributes, group_attributes(match$geneAttributes)
-    ))
+    output$gene_aliases <- append(
+      output$gene_aliases, list(lapply(match$geneAliases, function(a) a$alias))
+    )
+    output$gene_attributes <- append(
+      output$gene_attributes, list(group_attributes(match$geneAttributes))
+    )
+    View(output$gene_attributes)
   }
   output$gene_attributes <- backfill_dicts(output$gene_attributes)
   return(output)
@@ -196,7 +195,7 @@ get_interactions <- function(
     interaction_sources = list(),
     interaction_pmids = list()
   )
-  View(results)
+
   for (result in results) {
     for (interaction in result$interactions) {
       output$gene_name <- append(
