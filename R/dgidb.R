@@ -41,8 +41,7 @@ get_drugs <- function(
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = params),
-    encode = "json",
-    config = httr::add_headers(c("dgidb-client-name" = "dgipy"))
+    encode = "json"
   )
   result <- httr::content(response)$data
 
@@ -93,6 +92,42 @@ get_drugs <- function(
     ))
   }
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
+  return(output)
+}
+
+get_genes <- function(terms, api_url = NULL) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_genes.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  result <- httr::content(response)$data
+
+  output <- list(
+    gene_name = list(),
+    gene_concept_id = list(),
+    gene_aliases = list(),
+    gene_attributes = list()
+  )
+
+  for (match in result$genes$nodes) {
+    output$gene_name <- append(
+      output$gene_name, match$name
+    )
+    output$gene_concept_id <- append(
+      output$gene_concept_id, match$conceptId
+    )
+    output$gene_aliases <- list(append(
+      output$gene_aliases,
+      lapply(match$geneAliases, function(a) a$alias)
+    ))
+    output$gene_attributes <- list(append(
+      output$gene_attributes, group_attributes(match$geneAttributes)
+    ))
+  }
+  output$gene_attributes <- backfill_dicts(output$gene_attributes)
   return(output)
 }
 
