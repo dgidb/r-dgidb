@@ -1,0 +1,45 @@
+query getInteractionsByGene(
+  $names: [String!]
+  $sourceDbName: String
+  $pmid: Int
+  $interactionType: String
+) {
+  genes(
+    names: $names
+    sourceDbName: $sourceDbName
+    pmid: $pmid
+    interactionType: $interactionType
+  ) {
+    nodes {
+      interactions {
+        interactionAttributes {
+          name
+          value
+        }
+        drug {
+          name
+          conceptId
+          approved
+        }
+        gene {
+          name
+          longName
+          conceptId
+          geneCategories {
+            name
+          }
+        }
+        interactionScore
+        interactionClaims {
+          publications {
+            citation
+            pmid
+          }
+          source {
+            sourceDbName
+          }
+        }
+      }
+    }
+  }
+}

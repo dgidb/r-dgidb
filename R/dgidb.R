@@ -131,215 +131,110 @@ get_genes <- function(terms, api_url = NULL) {
   return(output)
 }
 
-#' Perform an interaction look up for drugs or genes of interest
-#'
-#' @param terms drugs or genes for interaction look up
-#' @param use_processing placeholder
-#' @param search interaction search type. valid types are "drugs" or "genes"
-#' @param immunotherapy filter option for results that are used in immunotherapy
-#' @param antineoplastic filter option for results that are part of antineoplastic regimens # nolint: line_length_linter.
-#' @param sourcedbname filter option for specific database of interest
-#' @param pmid filter option for specific PMID
-#' @param interactiontype filter option for specific interaction types
-#' @param approved filter option for approved interactions
-#'
-#' @returns interaction results for terms
-#' @export
-#'
-#' @examples
-#' x <- c("BRAF", "PDGFRA")
-#' get_interactions(x)
 get_interactions <- function(
     terms,
-    use_processing = TRUE,
     search = "genes",
     immunotherapy = NULL,
     antineoplastic = NULL,
-    sourcedbname = NULL,
+    source = NULL,
     pmid = NULL,
-    interactiontype = NULL,
-    approved = NULL) {
-  terms <- paste0(
-    "[\"",
-    paste(toupper(terms),
-      collapse = "\",\""
-    ), "\"]"
-  )
-  if (search == "genes") {
-    immunotherapy <- NULL
-    antineoplastic <- NULL
+    interaction_type = NULL,
+    approved = NULL,
+    api_url = NULL) {
+  params <- list(names = terms)
+  if (!is.null(immunotherapy)) {
+    params$immunotherapy <- immunotherapy
+  }
+  if (!is.null(antineoplastic)) {
+    params$antiNeoplastic <- antineoplastic
+  }
+  if (!is.null(source)) {
+    params$sourceDbName <- source
+  }
+  if (!is.null(pmid)) {
+    params$pmid <- pmid
+  }
+  if (!is.null(interaction_type)) {
+    params$interactionType <- interaction_type
+  }
+  if (!is.null(approved)) {
+    params$approved <- approved
   }
 
-  # TODO: Implement Filters
-  filters <- ""
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+
   if (search == "genes") {
-    query <- paste0("{\ngenes(names: ", terms, filters, ") {\nnodes{\nname\nlongName\ngeneCategories{\nname\n}\ninteractions {\ninteractionAttributes {\nname\nvalue\n}\ndrug {\nname\napproved\n}\ninteractionScore\ninteractionClaims {\npublications {\npmid\ncitation\n}\nsource {\nfullName\nid\n}\n}\n}\n}\n}\n}") # nolint: line_length_linter.
+    query <- readr::read_file("queries/get_interactions_by_gene.graphql")
+    response <- httr::POST(
+      api_url,
+      body = list(query = query, variables = list(names = terms)),
+      encode = "json"
+    )
+    results <- httr::content(response)$data$genes$nodes
   } else if (search == "drugs") {
-    query <- paste0("{\ndrugs(names: ", terms, filters, ") {\nnodes{\nname\napproved\ninteractions {\ngene {\nname\n}\ninteractionAttributes {\nname\nvalue\n}\ninteractionScore\ninteractionClaims {\npublications {\npmid\ncitation\n}\nsource {\nfullName\nid\n}\n}\n}\n}\n}\n}") # nolint: line_length_linter.
+    query <- readr::read_file("queries/get_interactions_by_drug.graphql")
+    response <- httr::POST(
+      api_url,
+      body = list(query = query, variables = list(names = terms)),
+      encode = "json"
+    )
+    results <- httr::content(response)$data$drugs$nodes
   } else {
-    stop("Search type must be specified using: search='drugs' or search='genes'") # nolint: line_length_linter.
+    msg <- "Search type must be specified using: search='drugs' or search='genes'" # nolint: line_length_linter.
+    stop(msg)
   }
 
-  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
-  data <- httr::content(r)$data
-
-  if (use_processing == TRUE) {
-    if (search == "genes") {
-      data <- process_gene(data)
-    } else if (search == "drugs") {
-      data <- process_drug(data)
-    } else {
-      stop(
-        "Search type must be specified using: search='drugs' or search='genes'"
+  output <- list(
+    gene_name = list(),
+    gene_concept_id = list(),
+    gene_long_name = list(),
+    drug_name = list(),
+    drug_concept_id = list(),
+    drug_approved = list(),
+    interaction_score = list(),
+    interaction_attributes = list(),
+    interaction_sources = list(),
+    interaction_pmids = list()
+  )
+  View(results)
+  for (result in results) {
+    for (interaction in result$interactions) {
+      output$gene_name <- append(
+        output$gene_name, match$name
       )
+      output$gene_concept_id <- append(
+        output$gene_concept_id, match$conceptId
+      )
+      output$gene_long_name <- list(append(
+        output$gene_long_name,
+        lapply(match$drugAliases, function(a) a$alias)
+      ))
+      output$drug_attributes <- list(append(
+        output$drug_attributes, group_attributes(match$drugAttributes)
+      ))
+      output$drug_is_antineoplastic <- append(
+        output$drug_is_antineoplastic, match$antiNeoplastic
+      )
+      output$drug_is_immunotherapy <- append(
+        output$drug_is_immunotherapy, match$immunotherapy
+      )
+      output$drug_is_approved <- append(
+        output$drug_is_approved, match$approved
+      )
+      output$drug_approval_ratings <- list(append(
+        output$drug_approval_ratings,
+        lapply(match$drugApprovalRatings, function(r) {
+          list(rating = r$rating, source = r$source$sourceDbName)
+        })
+      ))
+      output$drug_fda_applications <- list(append(
+        output$drug_fda_applications,
+        lapply(match$drugApplications, function(app) app$appNo)
+      ))
     }
   }
-  return(data)
-}
-
-#' Process Genes
-#'
-#' @param data genes for processing
-#'
-#' @returns processed genes
-#' @export
-#'
-process_gene <- function(data) {
-  data <- data$genes$nodes
-  dt <- data.table::rbindlist(lapply(data, data.table::as.data.table))
-  dt <- tidyr::unnest_wider(dt, col = "interactions")
-  dt <- tidyr::unnest_wider(dt, col = "drug", names_sep = "_")
-
-  dt$interactionAttributes <- lapply(dt$interactionAttributes, function(x) {
-    attributes <- list()
-    for (i in seq_along(x)) {
-      elem <- paste(x[[i]]$name, x[[i]]$value, sep = ": ")
-      attributes <- append(attributes, elem)
-    }
-    int_attributes <- paste(attributes, collapse = " | ")
-    return(int_attributes)
-  })
-
-  dt$pmid <- lapply(dt$interactionClaims, function(x) {
-    pmids <- list()
-
-    for (i in seq_along(x)) {
-      curr_publication <- x[[i]]$publications
-      if (length(curr_publication) == 0) next
-      for (j in seq_along(curr_publication)) {
-        current_pmid <- curr_publication[[j]]$pmid
-        pmids <- append(pmids, current_pmid)
-      }
-    }
-    pmids_str <- paste(pmids, collapse = " | ")
-
-    return(pmids_str)
-  })
-
-  dt$source <- lapply(dt$interactionClaims, function(x) {
-    sources <- list()
-
-    for (i in seq_along(x)) {
-      current_source_name <- x[[i]]$source$fullName
-      sources <- append(sources, current_source_name)
-    }
-    sources_str <- paste(sources, collapse = " | ")
-
-    return(sources_str)
-  })
-
-  dt$geneCategories <- NULL
-  dt$interactionClaims <- NULL
-  data.table::setnames(dt,
-    old = c(
-      "name",
-      "interactionAttributes",
-      "drug_name",
-      "drug_approved",
-      "interactionScore"
-    ),
-    new = c(
-      "gene",
-      "interaction_attributes",
-      "drug",
-      "approval",
-      "score"
-    )
-  )
-
-  return(dt)
-}
-
-#' Process Drugs
-#'
-#' @param data drugs to process
-#'
-#' @returns processed drugs
-#' @export
-#'
-process_drug <- function(data) {
-  data <- data$drugs$nodes
-  dt <- data.table::rbindlist(lapply(data, data.table::as.data.table))
-  dt <- tidyr::unnest_wider(dt, col = "interactions")
-  dt <- tidyr::unnest_wider(dt, col = "gene", names_sep = "_")
-
-  dt$interactionAttributes <- lapply(dt$interactionAttributes, function(x) {
-    attributes <- list()
-    for (i in seq_along(x)) {
-      elem <- paste(x[[i]]$name, x[[i]]$value, sep = ": ")
-      attributes <- append(attributes, elem)
-    }
-    int_attributes <- paste(attributes, collapse = " | ")
-    return(int_attributes)
-  })
-
-  dt$pmid <- lapply(dt$interactionClaims, function(x) {
-    pmids <- list()
-
-    for (i in seq_along(x)) {
-      curr_publication <- x[[i]]$publications
-      if (length(curr_publication) == 0) next
-      for (j in seq_along(curr_publication)) {
-        current_pmid <- curr_publication[[j]]$pmid
-        pmids <- append(pmids, current_pmid)
-      }
-    }
-    pmids_str <- paste(pmids, collapse = " | ")
-
-    return(pmids_str)
-  })
-
-  dt$source <- lapply(dt$interactionClaims, function(x) {
-    sources <- list()
-
-    for (i in seq_along(x)) {
-      current_source_name <- x[[i]]$source$fullName
-      sources <- append(sources, current_source_name)
-    }
-    sources_str <- paste(sources, collapse = " | ")
-
-    return(sources_str)
-  })
-
-  dt$interactionClaims <- NULL
-  data.table::setnames(dt,
-    old = c(
-      "name",
-      "approved",
-      "gene_name",
-      "interactionAttributes",
-      "interactionScore"
-    ),
-    new = c(
-      "drug",
-      "approval",
-      "gene",
-      "interaction_attributes",
-      "score"
-    )
-  )
-
-  return(dt)
+  output$drug_attributes <- backfill_dicts(output$drug_attributes)
+  return(output)
 }
 
 #' Get all gene names present in DGIdb
