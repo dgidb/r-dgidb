@@ -240,6 +240,49 @@ get_interactions <- function(
   return(output)
 }
 
+get_categories <- function(terms, api_url = NULL) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_gene_categories.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  results <- httr::content(response)$data
+
+  output <- list(
+    gene_name = list(),
+    gene_concept_id = list(),
+    gene_full_name = list(),
+    gene_category = list(),
+    gene_category_sources = list()
+  )
+
+  for (result in results$genes$nodes) {
+    name <- result$name
+    long_name <- result$longName
+    concept_id <- result$conceptId
+    for (cat in result$geneCategoriesWithSources) {
+      output$gene_name <- append(
+        output$gene_name, name
+      )
+      output$gene_concept_id <- append(
+        output$gene_concept_id, concept_id
+      )
+      output$gene_full_name <- append(
+        output$gene_full_name, long_name
+      )
+      output$gene_category <- append(
+        output$gene_category, cat$name
+      )
+      output$gene_category_sources <- append(
+        output$gene_category_sources, cat$sourceNames
+      )
+    }
+  }
+  return(output)
+}
+
 get_all_genes <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_all_genes.graphql")
