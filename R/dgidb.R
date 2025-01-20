@@ -240,24 +240,56 @@ get_interactions <- function(
   return(output)
 }
 
-#' Get all gene names present in DGIdb
-#'
-#' @returns full list of all genes
-#' @export
-#'
-#' @examples
-#' get_gene_list()
-get_gene_list <- function() {
-  query <- "{\ngenes {\nnodes {\nname\n}\n}\n}"
-  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
-  gene_list <- list()
-  raw_nodes <- httr::content(r)$data$genes$nodes
-  for (i in seq_along(raw_nodes)) {
-    gene_name <- raw_nodes[[i]]$name
-    gene_list <- append(gene_list, gene_name)
+get_all_genes <- function(api_url = NULL) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_all_genes.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  results <- httr::content(response)$data
+
+  genes <- list(
+    gene_name = list(),
+    gene_concept_id = list()
+  )
+
+  for (result in results$genes$nodes) {
+    genes$gene_name <- append(
+      genes$gene_name, result$name
+    )
+    genes$gene_concept_id <- append(
+      genes$gene_concept_id, result$conceptId
+    )
   }
-  gene_list <- sort(unlist(gene_list))
-  return(gene_list)
+  return(genes)
+}
+
+get_all_drugs <- function(api_url = NULL) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_all_drugs.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  results <- httr::content(response)$data
+
+  drugs <- list(
+    drug_name = list(),
+    drug_concept_id = list()
+  )
+
+  for (result in results$drugs$nodes) {
+    drugs$drug_name <- append(
+      drugs$drug_name, result$name
+    )
+    drugs$drug_concept_id <- append(
+      drugs$drug_concept_id, result$conceptId
+    )
+  }
+  return(drugs)
 }
 
 #' Perform a look up for ANDA/NDA applications for drug or drugs of interest
