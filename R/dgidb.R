@@ -283,6 +283,55 @@ get_categories <- function(terms, api_url = NULL) {
   return(output)
 }
 
+get_sources <- function(source_type = NULL, api_url = NULL) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_sources.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  results <- httr::content(response)$data
+
+  output <- list(
+    source_name = list(),
+    source_short_name = list(),
+    source_version = list(),
+    source_drug_claims = list(),
+    source_gene_claims = list(),
+    source_interaction_claims = list(),
+    source_license = list(),
+    source_license_url = list()
+  )
+
+  for (result in results$sources$nodes) {
+    output$source_name <- append(
+      output$source_name, result$fullName
+    )
+    output$source_short_name <- append(
+      output$source_short_name, result$sourceDbName
+    )
+    output$source_version <- append(
+      output$source_version, result$sourceDbVersion
+    )
+    output$source_drug_claims <- append(
+      output$source_drug_claims, result$drugClaimsCount
+    )
+    output$source_gene_claims <- append(
+      output$source_gene_claims, result$geneClaimsCount
+    )
+    output$source_interaction_claims <- append(
+      output$source_interaction_claims, result$interactionClaimsCount
+    )
+    output$source_license <- append(
+      output$source_license, result$license
+    )
+    output$source_license_url <- append(
+      output$source_license_url, result$licenseLink
+    )
+  }
+}
+
 get_all_genes <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_all_genes.graphql")
