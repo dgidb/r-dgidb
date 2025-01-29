@@ -384,57 +384,40 @@ get_all_drugs <- function(api_url = NULL) {
   return(drugs)
 }
 
-#' Perform a look up for ANDA/NDA applications for drug or drugs of interest
-#'
-#' @param terms drugs of interest
-#' @param use_processing placeholder
-#'
-#' @returns all ANDA/NDA applications for drugs of interest
-#' @export
-#'
-#' @examples
-#' terms <- "DOVITINIB"
-#' get_drug_applications(terms)
-get_drug_applications <- function(terms, use_processing = TRUE) {
-  terms <- paste0("[\"", paste(toupper(terms), collapse = "\",\""), "\"]")
-  query <- paste0("{\ndrugs(names: ", terms, ") {\nnodes{\nname \ndrugApplications {\nappNo\n}\n}\n}\n}\n") # nolint: line_length_linter.
+get_anda_results <- function(anda) {
 
-  r <- httr::POST(api_endpoint_url, body = list(query = query), encode = "json")
-  data <- httr::content(r)
-
-  if (use_processing == TRUE) {
-    data <- process_drug_applications(data)
-    data <- openfda_data(data)
-  }
-  return(data)
 }
 
-#' Process Drug Applications
-#'
-#' @param data drug applications to process
-#'
-#' @returns processed drug applications
-#' @export
-#'
-process_drug_applications <- function(data) {
-  0
-  drug_list <- c()
-  application_list <- c()
+get_drug_applications <- function() {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query <- readr::read_file("queries/get_drug_applications.graphql")
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = list(names = terms)),
+    encode = "json"
+  )
+  results <- httr::content(response)$data
 
-  for (node in data$data$drugs$nodes) {
-    current_drug <- node$name
+  output <- list(
+    drug_name = list(),
+    drug_concept_id = list(),
+    drug_product_application = list(),
+    drug_brand_name = list(),
+    drug_marketing_status = list(),
+    drug_dosage_form = list(),
+    drug_dosage_strength = list()
+  )
 
-    for (application in node$drugApplications) {
-      drug_list <- c(drug_list, current_drug)
-      application <- toupper(gsub(
-        ":",
-        "",
-        strsplit(application$appNo, "\\.")[[1]][2]
-      ))
-      application_list <- c(application_list, application)
+  for (result in results$drugs$nodes) {
+    name <- result$name
+    concept_id <- result$conceptId
+    for (app in result$drugApplications) {
+      app_no <- app$appNo
+      anda <- "anda" %in% app_no
+      lui <- strsplit(app_no, ":")[[1]][2]
+      full_app_no <- paste(ifelse(anda, "ANDA", "NDA"), lui, sep = "")
+      # TODO
     }
   }
-
-  dataframe <- data.frame(drug = drug_list, application = application_list)
-  return(dataframe)
+  return(output)
 }
