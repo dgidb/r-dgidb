@@ -1,0 +1,11 @@
+query getDrugApplications($names: [String!]) {
+  drugs(names: $names) {
+    nodes {
+      name
+      conceptId
+      drugApplications {
+        appNo
+      }
+    }
+  }
+}
