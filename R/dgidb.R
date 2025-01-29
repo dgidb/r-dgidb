@@ -283,12 +283,29 @@ get_categories <- function(terms, api_url = NULL) {
   return(output)
 }
 
+source_type <- list(
+  DRUG = "drug",
+  GENE = "gene",
+  INTERACTION = "interaction",
+  POTENTIALLY_DRUGGABLE = "potentially_druggable"
+)
+
 get_sources <- function(source_type = NULL, api_url = NULL) {
+  source_param <- if (!is.null(source_type)) {
+    toupper(source_type$value)
+  } else {
+    NULL
+  }
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_sources.graphql")
+  params <- if (is.null(source_type)) {
+    list()
+  } else {
+    list(sourceType = source_param)
+  }
   response <- httr::POST(
     api_url,
-    body = list(query = query, variables = list(names = terms)),
+    body = list(query = query, variables = params),
     encode = "json"
   )
   results <- httr::content(response)$data
