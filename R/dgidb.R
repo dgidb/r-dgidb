@@ -3,6 +3,14 @@ api_endpoint_url <- Sys.getenv(
   unset = "https://dgidb.org/api/graphql"
 )
 
+#' Group Attributes
+#'
+#' Groups attributes by name and stores their values in a list
+#'
+#' @param row
+#' A list of dictionaries of attributes
+#' @return
+#' A dictionary which maps each attribute to a list of associated values
 group_attributes <- function(row) {
   grouped_dict <- list()
   for (attr in row) {
@@ -17,12 +25,38 @@ group_attributes <- function(row) {
   return(grouped_dict)
 }
 
+#' Backfill Dicts
+#'
+#' Fills missing values in a list of dictionaries
+#'
+#' @param col
+#' A list of dictionaries, where each dictionary might have missing keys
+#' @return
+#' A list of dictionaries, where each dictionary contains all possible keys
 backfill_dicts <- function(col) {
   keys <- unique(unlist(lapply(col, names)))
   result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
   return(result)
 }
 
+#' Get Drugs
+#'
+#' Perform a record look up in DGIdb for a drug of interest
+#'
+#' @param terms
+#' drugs for record lookup
+#' @param immunotherapy
+#' filter option for results that are only immunotherapy, Default: NULL
+#' @param antineoplastic
+#' filter option for results that see antineoplastic use, Default: NULL
+#' @param api_url
+#' API endpoint for GraphQL request, Default: NULL
+#' @return
+#' drug data
+#'
+#' @examples
+#' get_drugs(c("Imatinib"))
+#' @export
 get_drugs <- function(
     terms,
     immunotherapy = NULL,
@@ -94,6 +128,17 @@ get_drugs <- function(
   return(output)
 }
 
+#' Get Genes
+#'
+#' Perform a record look up in DGIdb for genes of interest
+#'
+#' @param terms genes for record lookup
+#' @param api_url API endpoint for GraphQL request, Default: NULL
+#' @return gene data
+#'
+#' @examples
+#' get_genes(c("BRAF", "PDGFRA"))
+#' @export
 get_genes <- function(terms, api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_genes.graphql")
@@ -129,6 +174,35 @@ get_genes <- function(terms, api_url = NULL) {
   return(output)
 }
 
+#' Get Interactions
+#'
+#' Perform an interaction look up for drugs or genes of interest
+#'
+#' @param terms
+#' drugs or genes for interaction look up
+#' @param search
+#' interaction search type. valid types are "drugs" or "genes", Default: 'genes'
+#' @param immunotherapy
+#' filter option for results that are used in immunotherapy, Default: NULL
+#' @param antineoplastic
+#' filter option for results that are part of antineoplastic regimens,
+#' Default: NULL
+#' @param source
+#' filter option for specific database of interest, Default: NULL
+#' @param pmid
+#' filter option for specific PMID, Default: NULL
+#' @param interaction_type
+#' filter option for specific interaction types, Default: NULL
+#' @param approved
+#' filter option for approved interactions, Default: NULL
+#' @param api_url
+#' API endpoint for GraphQL request, Default: NULL
+#' @return
+#' interaction results for terms
+#'
+#' @examples
+#' get_interactions(c("BRAF", "PDGFRA"))
+#' @export
 get_interactions <- function(
     terms,
     search = "genes",
@@ -240,6 +314,17 @@ get_interactions <- function(
   return(output)
 }
 
+#' Get Categories
+#'
+#' Perform a category annotation lookup for genes of interest
+#'
+#' @param terms Genes of interest for annotations
+#' @param api_url API endpoint for GraphQL request, Default: NULL
+#' @return category annotation results for genes
+#'
+#' @examples
+#' get_categories(c("BRAF", "PDGFRA"))
+#' @export
 get_categories <- function(terms, api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_gene_categories.graphql")
@@ -290,6 +375,20 @@ source_type <- list(
   POTENTIALLY_DRUGGABLE = "potentially_druggable"
 )
 
+#' Get Sources
+#'
+#' Perform a source lookup for relevant aggregate sources
+#'
+#' @param source_type
+#' type of source to look up. Fetches all sources otherwise, Default: NULL
+#' @param api_url
+#' API endpoint for GraphQL request, Default: NULL
+#' @return
+#' all sources of relevant type in a json object
+#'
+#' @examples
+#' sources <- get_source(source_type$POTENTIALLY_DRUGGABLE)
+#' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
   source_param <- if (!is.null(source_type)) {
     toupper(source_type$value)
@@ -349,6 +448,16 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
   }
 }
 
+#' Get All Genes
+#'
+#' Get all gene names present in DGIdb
+#'
+#' @param api_url API endpoint for GraphQL request, Default: NULL
+#' @return a full list of genes present in dgidb
+#'
+#' @examples
+#' get_all_genes()
+#' @export
 get_all_genes <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_all_genes.graphql")
@@ -375,6 +484,16 @@ get_all_genes <- function(api_url = NULL) {
   return(genes)
 }
 
+#' Get All Drugs
+#'
+#' Get all drug names present in DGIdb
+#'
+#' @param api_url API endpoint for GraphQL request, Default: NULL
+#' @return a full list of drugs present in dgidb
+#'
+#' @examples
+#' get_all_drugs()
+#' @export
 get_all_drugs <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query <- readr::read_file("queries/get_all_drugs.graphql")

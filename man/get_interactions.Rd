@@ -2,38 +2,39 @@
 % Please edit documentation in R/dgidb.R
 \name{get_interactions}
 \alias{get_interactions}
-\title{Perform an interaction look up for drugs or genes of interest}
+\title{Get Interactions}
 \usage{
 get_interactions(
   terms,
-  use_processing = TRUE,
   search = "genes",
   immunotherapy = NULL,
   antineoplastic = NULL,
-  sourcedbname = NULL,
+  source = NULL,
   pmid = NULL,
-  interactiontype = NULL,
-  approved = NULL
+  interaction_type = NULL,
+  approved = NULL,
+  api_url = NULL
 )
 }
 \arguments{
 \item{terms}{drugs or genes for interaction look up}
 
-\item{use_processing}{placeholder}
+\item{search}{interaction search type. valid types are "drugs" or "genes", Default: 'genes'}
 
-\item{search}{interaction search type. valid types are "drugs" or "genes"}
+\item{immunotherapy}{filter option for results that are used in immunotherapy, Default: NULL}
 
-\item{immunotherapy}{filter option for results that are used in immunotherapy}
+\item{antineoplastic}{filter option for results that are part of antineoplastic regimens,
+Default: NULL}
 
-\item{antineoplastic}{filter option for results that are part of antineoplastic regimens # nolint: line_length_linter.}
+\item{source}{filter option for specific database of interest, Default: NULL}
 
-\item{sourcedbname}{filter option for specific database of interest}
+\item{pmid}{filter option for specific PMID, Default: NULL}
 
-\item{pmid}{filter option for specific PMID}
+\item{interaction_type}{filter option for specific interaction types, Default: NULL}
 
-\item{interactiontype}{filter option for specific interaction types}
+\item{approved}{filter option for approved interactions, Default: NULL}
 
-\item{approved}{filter option for approved interactions}
+\item{api_url}{API endpoint for GraphQL request, Default: NULL}
 }
 \value{
 interaction results for terms
@@ -42,6 +43,5 @@ interaction results for terms
 Perform an interaction look up for drugs or genes of interest
 }
 \examples{
-x <- c("BRAF", "PDGFRA")
-get_interactions(x)
+get_interactions(c("BRAF", "PDGFRA"))
 }
