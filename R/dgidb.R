@@ -71,7 +71,11 @@ get_drugs <- function(
   }
 
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_drugs.graphql")
+  query_file_path <- system.file(
+    "queries/get_drugs.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = params),
@@ -141,7 +145,11 @@ get_drugs <- function(
 #' @export
 get_genes <- function(terms, api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_genes.graphql")
+  query_file_path <- system.file(
+    "queries/get_genes.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = list(names = terms)),
@@ -236,7 +244,11 @@ get_interactions <- function(
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
 
   if (search == "genes") {
-    query <- readr::read_file("queries/get_interactions_by_gene.graphql")
+    query_file_path <- system.file(
+      "queries/get_interactions_by_gene.graphql",
+      package = "rdgidb"
+    )
+    query <- readr::read_file(query_file_path)
     response <- httr::POST(
       api_url,
       body = list(query = query, variables = list(names = terms)),
@@ -244,7 +256,11 @@ get_interactions <- function(
     )
     results <- httr::content(response)$data$genes$nodes
   } else if (search == "drugs") {
-    query <- readr::read_file("queries/get_interactions_by_drug.graphql")
+    query_file_path <- system.file(
+      "queries/get_interactions_by_drug.graphql",
+      package = "rdgidb"
+    )
+    query <- readr::read_file(query_file_path)
     response <- httr::POST(
       api_url,
       body = list(query = query, variables = list(names = terms)),
@@ -327,7 +343,11 @@ get_interactions <- function(
 #' @export
 get_categories <- function(terms, api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_gene_categories.graphql")
+  query_file_path <- system.file(
+    "queries/get_gene_categories.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = list(names = terms)),
@@ -396,7 +416,11 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
     NULL
   }
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_sources.graphql")
+  query_file_path <- system.file(
+    "queries/get_sources.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   params <- if (is.null(source_type)) {
     list()
   } else {
@@ -460,7 +484,11 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
 #' @export
 get_all_genes <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_all_genes.graphql")
+  query_file_path <- system.file(
+    "queries/get_all_genes.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = list(names = terms)),
@@ -496,7 +524,11 @@ get_all_genes <- function(api_url = NULL) {
 #' @export
 get_all_drugs <- function(api_url = NULL) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query <- readr::read_file("queries/get_all_drugs.graphql")
+  query_file_path <- system.file(
+    "queries/get_all_drugs.graphql",
+    package = "rdgidb"
+  )
+  query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
     body = list(query = query, variables = list(names = terms)),
