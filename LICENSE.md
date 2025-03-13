@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2025 rdgidb authors
+Copyright (c) 2025 Wagner Laboratory at the Institute for Genomic Medicine
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
