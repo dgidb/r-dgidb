@@ -411,7 +411,7 @@ source_type <- list(
 #' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
   source_param <- if (!is.null(source_type)) {
-    toupper(source_type$value)
+    toupper(source_type)
   } else {
     NULL
   }
@@ -470,6 +470,7 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
       output$source_license_url, result$licenseLink
     )
   }
+  return(output)
 }
 
 #' Get All Genes

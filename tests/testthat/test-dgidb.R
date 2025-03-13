@@ -136,10 +136,10 @@ test_that("Test Get Sources", {
     length(sources) == 3,
     "Incorrect # of sources: " + str(length(sources))
   )
+  # "Check: Contains correct sources"
   expect_setequal(
     sources,
-    c("NCBI Gene", "HUGO Gene Nomenclature Committee", "Ensembl"),
-    "FAIL: Contains correct sources"
+    c("NCBI Gene", "HUGO Gene Nomenclature Committee", "Ensembl")
   )
 })
 
