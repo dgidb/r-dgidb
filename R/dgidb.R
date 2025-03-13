@@ -491,7 +491,7 @@ get_all_genes <- function(api_url = NULL) {
   query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
-    body = list(query = query, variables = list(names = terms)),
+    body = list(query = query),
     encode = "json"
   )
   results <- httr::content(response)$data
@@ -531,7 +531,7 @@ get_all_drugs <- function(api_url = NULL) {
   query <- readr::read_file(query_file_path)
   response <- httr::POST(
     api_url,
-    body = list(query = query, variables = list(names = terms)),
+    body = list(query = query),
     encode = "json"
   )
   results <- httr::content(response)$data
