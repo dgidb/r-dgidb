@@ -1,0 +1,46 @@
+{
+  "data": {
+    "genes": {
+      "nodes": [
+        {
+          "name": "BRAF",
+          "conceptId": "hgnc:1097",
+          "longName": "B-Raf proto-oncogene, serine/threonine kinase",
+          "geneCategoriesWithSources": [
+            {
+              "name": "CLINICALLY ACTIONABLE",
+              "sourceNames": [
+                "CIViC",
+                "CarisMolecularIntelligence",
+                "FoundationOneGenes",
+                "MskImpact",
+                "Oncomine",
+                "Tempus"
+              ]
+            },
+            {
+              "name": "DRUG RESISTANCE",
+              "sourceNames": ["CIViC", "COSMIC"]
+            },
+            {
+              "name": "DRUGGABLE GENOME",
+              "sourceNames": ["HingoraniCasas", "HopkinsGroom", "RussLampel"]
+            },
+            {
+              "name": "ENZYME",
+              "sourceNames": ["GuideToPharmacology"]
+            },
+            {
+              "name": "KINASE",
+              "sourceNames": ["HopkinsGroom", "Pharos", "dGene"]
+            },
+            {
+              "name": "SERINE THREONINE KINASE",
+              "sourceNames": ["GO", "dGene"]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
