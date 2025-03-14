@@ -407,7 +407,13 @@ source_type <- list(
 #' all sources of relevant type in a json object
 #'
 #' @examples
-#' sources <- get_source(source_type$POTENTIALLY_DRUGGABLE)
+#' source_type <- list(
+#'   DRUG = "drug",
+#'   GENE = "gene",
+#'   INTERACTION = "interaction",
+#'   POTENTIALLY_DRUGGABLE = "potentially_druggable"
+#' )
+#' sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
 #' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
   source_param <- if (!is.null(source_type)) {

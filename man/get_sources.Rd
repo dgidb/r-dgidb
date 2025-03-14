@@ -18,5 +18,11 @@ all sources of relevant type in a json object
 Perform a source lookup for relevant aggregate sources
 }
 \examples{
-sources <- get_source(source_type$POTENTIALLY_DRUGGABLE)
+source_type <- list(
+  DRUG = "drug",
+  GENE = "gene",
+  INTERACTION = "interaction",
+  POTENTIALLY_DRUGGABLE = "potentially_druggable"
+)
+sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
 }
