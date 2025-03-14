@@ -22,7 +22,7 @@ group_attributes <- function(row) {
       grouped_dict[[attr$name]] <- list(attr$value)
     }
   }
-  return(grouped_dict)
+  grouped_dict
 }
 
 #' Backfill Dicts
@@ -36,7 +36,7 @@ group_attributes <- function(row) {
 backfill_dicts <- function(col) {
   keys <- unique(unlist(lapply(col, names)))
   result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
-  return(result)
+  result
 }
 
 #' Get Drugs
