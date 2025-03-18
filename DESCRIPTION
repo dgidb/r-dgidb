@@ -1,11 +1,27 @@
 Package: rdgidb
-Title: Wrapper for DGIdb
-Version: 0.0.0.9000
-Authors@R: 
-    person("Rohit", "Basu", , "rohit.basu@nationwidechildrens.org", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: use_mit_license()
+Title: R Wrapper for DGIdb
+Version: 0.0.1
+Authors@R: c(
+        person("Rohit", "Basu", 
+                email = "rohit.basu@nationwidechildrens.org", 
+                role = c("aut", "cre")),
+        person("James", "Stevenson", 
+                email = "james.stevenson@nationwidechildrens.org", 
+                role = c("aut")),
+        person("Matthew", "Cannon", 
+                email = "Matthew.Cannon2@nationwidechildrens.org", 
+                role = c("aut")))
+Description: R wrapper for accessing an instance of DGIdb v5 database. Currently supported searches will return individual interaction data for drugs or genes, category annotations for genes, or information for drugs.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports: 
+    httr,
+    readr,
+Suggests: 
+    devtools,
+    httptest,
+    microbenchmark,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

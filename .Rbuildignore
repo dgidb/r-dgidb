@@ -1,1 +1,5 @@
 ^\.github$
+^rdgidb\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^.lintr$
