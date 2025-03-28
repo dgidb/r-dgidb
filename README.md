@@ -2,6 +2,14 @@
 In-progress R wrapper for DGIdb
 
 # Development
+Use the renv package to install packages recorded in the renv lockfile 
+ ```r
+library(renv)
+
+# Restore packages
+renv::restore()
+```
+
 Use the devtools package to develop r-dgidb
 ```r
 library(devtools)

@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^\.github$
 ^rdgidb\.Rproj$
 ^\.Rproj\.user$
