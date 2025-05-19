@@ -15,10 +15,15 @@ devtools::document()
 # Run tests
 devtools::test()
 
+# Build vignettes
+devtools::build_vignettes()
+
 # Check package
 devtools::check()
 ```
+
 Use the styler package to format r-dgidb
+
 ```r
 library(styler)
 
