@@ -49,7 +49,7 @@ httptest::with_mock_api({
 ## get_genes()
 
 ```{r benchmark-get-genes}
-httptest::with_mock_api("fixtures", {
+httptest::with_mock_api({
   microbenchmark(
     get_genes(genes),
     times = 10
@@ -60,7 +60,7 @@ httptest::with_mock_api("fixtures", {
 ## get_interactions()
 
 ```{r benchmark-get-interactions}
-httptest::with_mock_api("fixtures", {
+httptest::with_mock_api({
   # By Gene
   microbenchmark(
     get_interactions(genes, search="genes"),
@@ -78,7 +78,7 @@ httptest::with_mock_api("fixtures", {
 ## get_categories()
 
 ```{r benchmark-get-categories}
-httptest::with_mock_api("fixtures", {
+httptest::with_mock_api({
   microbenchmark(
     get_categories(genes),
     times = 10
@@ -89,7 +89,7 @@ httptest::with_mock_api("fixtures", {
 ## get_sources()
 
 ```{r benchmark-get-sources}
-httptest::with_mock_api("fixtures", {
+httptest::with_mock_api({
   microbenchmark(
     get_sources(),
     times = 10
