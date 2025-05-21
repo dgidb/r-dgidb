@@ -26,6 +26,10 @@ library(microbenchmark)
 library(httptest)
 ```
 
+```{r, include = FALSE}
+httptest::start_vignette("microbenchmark-rdgidb")
+```
+
 ## Initalize Inputs
 
 ```{r inputs}
@@ -95,4 +99,8 @@ httptest::with_mock_api({
     times = 10
   )
 })
+```
+
+```{r, include = FALSE}
+httptest::end_vignette()
 ```
