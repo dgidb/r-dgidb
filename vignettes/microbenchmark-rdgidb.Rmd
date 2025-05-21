@@ -1,0 +1,106 @@
+---
+title: "microbenchmark-rdgidb"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{microbenchmark-rdgidb}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+This vignette microbenchmarks functions from rdgidb
+
+## Load Packages
+
+```{r setup, message=FALSE}
+library(rdgidb)
+library(microbenchmark)
+library(httptest)
+```
+
+```{r, include = FALSE}
+httptest::start_vignette("microbenchmark-rdgidb")
+```
+
+## Initalize Inputs
+
+```{r inputs}
+genes <- c("BRAF", "PDGFRA")
+drugs <- c("Imatinib")
+```
+
+# Microbenchmarks
+
+## get_drugs()
+
+```{r benchmark-get-drugs, warning=FALSE}
+httptest::with_mock_api({
+  microbenchmark(
+    get_drugs(drugs),
+    times = 100
+  )
+})
+```
+
+## get_genes()
+
+```{r benchmark-get-genes}
+httptest::with_mock_api({
+  microbenchmark(
+    get_genes(genes),
+    times = 100
+  )
+})
+```
+
+## get_interactions()
+
+```{r benchmark-get-interactions}
+httptest::with_mock_api({
+  # By Gene
+  microbenchmark(
+    get_interactions(genes, search = "genes"),
+    times = 100
+  )
+
+  # By Drug
+  microbenchmark(
+    get_interactions(drugs, search = "drugs"),
+    times = 100
+  )
+})
+```
+
+## get_categories()
+
+```{r benchmark-get-categories}
+httptest::with_mock_api({
+  microbenchmark(
+    get_categories(genes),
+    times = 100
+  )
+})
+```
+
+## get_sources()
+
+```{r benchmark-get-sources}
+httptest::with_mock_api({
+  microbenchmark(
+    get_sources(),
+    times = 100
+  )
+})
+```
+
+```{r, include = FALSE}
+httptest::end_vignette()
+```

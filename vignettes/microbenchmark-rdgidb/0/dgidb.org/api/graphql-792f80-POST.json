@@ -1,0 +1,382 @@
+{
+    "data": {
+        "genes": {
+            "nodes": [
+                {
+                    "name": "PDGFRA",
+                    "longName": "platelet derived growth factor receptor alpha",
+                    "conceptId": "hgnc:8803",
+                    "geneAliases": [
+                        {
+                            "alias": "PLATELET DERIVED GROWTH FACTOR RECEPTOR ALPHA"
+                        },
+                        {
+                            "alias": "CD140A"
+                        },
+                        {
+                            "alias": "PDGFR2"
+                        },
+                        {
+                            "alias": "GAS9"
+                        },
+                        {
+                            "alias": "ENSEMBL:ENSG00000134853"
+                        },
+                        {
+                            "alias": "NCBIGENE:5156"
+                        },
+                        {
+                            "alias": "CCDS:CCDS3495"
+                        },
+                        {
+                            "alias": "UCSC:UC003HAN.5"
+                        },
+                        {
+                            "alias": "UNIPROT:P16234"
+                        },
+                        {
+                            "alias": "OMIM:173490"
+                        },
+                        {
+                            "alias": "COSMIC:PDGFRA"
+                        },
+                        {
+                            "alias": "IUPHAR:1803"
+                        },
+                        {
+                            "alias": "ENA.EMBL:D50001"
+                        },
+                        {
+                            "alias": "REFSEQ:NM_006206"
+                        },
+                        {
+                            "alias": "HCDMDB:CD140A"
+                        },
+                        {
+                            "alias": "VEGA:OTTHUMG00000128699"
+                        },
+                        {
+                            "alias": "PUBMED:8643452"
+                        },
+                        {
+                            "alias": "ORPHANET:124154"
+                        },
+                        {
+                            "alias": "PDGFR-2"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL2095189"
+                        },
+                        {
+                            "alias": "PLATELET-DERIVED GROWTH FACTOR RECEPTOR ALPHA"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL2007"
+                        },
+                        {
+                            "alias": "M21574"
+                        },
+                        {
+                            "alias": "GENBANK:189734"
+                        },
+                        {
+                            "alias": "IUPHAR.RECEPTOR:1803"
+                        },
+                        {
+                            "alias": "PGFRA_HUMAN"
+                        },
+                        {
+                            "alias": "TTD.TARGET:T53524"
+                        },
+                        {
+                            "alias": "RHEPDGFRA"
+                        },
+                        {
+                            "alias": "PDGFR"
+                        },
+                        {
+                            "alias": "PDGFR-ALPHA"
+                        },
+                        {
+                            "alias": "PHARMGKB.GENE:PA33147"
+                        },
+                        {
+                            "alias": "ALPHA PLATELET-DERIVED GROWTH FACTOR RECEPTOR PRECURSOR (EC 2.7.1.112) (PDGF-R-ALPHA) (CD140A ANTIGEN)"
+                        },
+                        {
+                            "alias": "CIVIC.GID:38"
+                        },
+                        {
+                            "alias": "NCBI.GENE:5156"
+                        }
+                    ],
+                    "geneAttributes": [
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "PDGFR"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "PDGFRA"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "PDGFR-A"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "PDGFR-a"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "PDGFR-alpha"
+                        },
+                        {
+                            "name": "Target Subclass",
+                            "value": "EC:2.7.10.1"
+                        },
+                        {
+                            "name": "Target Class",
+                            "value": "Receptors"
+                        },
+                        {
+                            "name": "Transmembrane Helix Count",
+                            "value": "1"
+                        },
+                        {
+                            "name": "Target Subclass",
+                            "value": "PDGFR"
+                        },
+                        {
+                            "name": "Target Subclass",
+                            "value": "KInase"
+                        },
+                        {
+                            "name": "Target Main Class",
+                            "value": "Receptors"
+                        },
+                        {
+                            "name": "GuideToPharmacology Family ID",
+                            "value": "iuphar.family:322"
+                        },
+                        {
+                            "name": "GuideToPharmacology Family Name",
+                            "value": "Type III RTKs: PDGFR, CSFR, Kit, FLT3 receptor family"
+                        },
+                        {
+                            "name": "InterPro Type",
+                            "value": "Domain"
+                        },
+                        {
+                            "name": "InterPro Short Name",
+                            "value": "Ser-Thr/Tyr_kinase_cat_dom"
+                        },
+                        {
+                            "name": "UniProtKB Status",
+                            "value": "Swiss-Prot"
+                        },
+                        {
+                            "name": "UniProtKB Evidence",
+                            "value": "1: Evidence at protein level"
+                        },
+                        {
+                            "name": "InterPro Accession ID",
+                            "value": "interpro:IPR001245"
+                        }
+                    ]
+                },
+                {
+                    "name": "BRAF",
+                    "longName": "B-Raf proto-oncogene, serine/threonine kinase",
+                    "conceptId": "hgnc:1097",
+                    "geneAliases": [
+                        {
+                            "alias": "B-RAF PROTO-ONCOGENE, SERINE/THREONINE KINASE"
+                        },
+                        {
+                            "alias": "BRAF1"
+                        },
+                        {
+                            "alias": "BRAF-1"
+                        },
+                        {
+                            "alias": "NCBIGENE:673"
+                        },
+                        {
+                            "alias": "ENSEMBL:ENSG00000157764"
+                        },
+                        {
+                            "alias": "COSMIC:BRAF"
+                        },
+                        {
+                            "alias": "PUBMED:2284096"
+                        },
+                        {
+                            "alias": "OMIM:164757"
+                        },
+                        {
+                            "alias": "ENA.EMBL:M95712"
+                        },
+                        {
+                            "alias": "IUPHAR:1943"
+                        },
+                        {
+                            "alias": "PUBMED:1565476"
+                        },
+                        {
+                            "alias": "REFSEQ:NM_004333"
+                        },
+                        {
+                            "alias": "UNIPROT:P15056"
+                        },
+                        {
+                            "alias": "VEGA:OTTHUMG00000157457"
+                        },
+                        {
+                            "alias": "UCSC:UC003VWC.5"
+                        },
+                        {
+                            "alias": "ORPHANET:119066"
+                        },
+                        {
+                            "alias": "B-RAF"
+                        },
+                        {
+                            "alias": "B-RAF1"
+                        },
+                        {
+                            "alias": "RAFB1"
+                        },
+                        {
+                            "alias": "NS7"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL5145"
+                        },
+                        {
+                            "alias": "SERINE/THREONINE-PROTEIN KINASE B-RAF"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL3559685"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL3883317"
+                        },
+                        {
+                            "alias": "BRAF_HUMAN"
+                        },
+                        {
+                            "alias": "RAF"
+                        },
+                        {
+                            "alias": "PHARMGKB.GENE:PA25408"
+                        },
+                        {
+                            "alias": "B-RAF PROTO-ONCOGENE SERINE/THREONINE-PROTEIN KINASE (EC 2.7.1.37) (P94) (V-RAF MURINE SARCOMA VIRAL ONCOGENE HOMOLOG B1)"
+                        },
+                        {
+                            "alias": "IUPHAR.RECEPTOR:1943"
+                        },
+                        {
+                            "alias": "CIVIC.GID:5"
+                        },
+                        {
+                            "alias": "NCBI.GENE:673"
+                        },
+                        {
+                            "alias": "BRAF (V660) E/K"
+                        },
+                        {
+                            "alias": "PAN-RAF"
+                        },
+                        {
+                            "alias": "BRAF V600E"
+                        },
+                        {
+                            "alias": "M95712"
+                        },
+                        {
+                            "alias": "GENBANK:41387220"
+                        },
+                        {
+                            "alias": "BRAF1_HUMAN"
+                        },
+                        {
+                            "alias": "TTD.TARGET:T99089"
+                        }
+                    ],
+                    "geneAttributes": [
+                        {
+                            "name": "InterPro Type",
+                            "value": "Domain"
+                        },
+                        {
+                            "name": "InterPro Short Name",
+                            "value": "Ser-Thr/Tyr_kinase_cat_dom"
+                        },
+                        {
+                            "name": "UniProtKB Status",
+                            "value": "Swiss-Prot"
+                        },
+                        {
+                            "name": "UniProtKB Evidence",
+                            "value": "1: Evidence at protein level"
+                        },
+                        {
+                            "name": "InterPro Accession ID",
+                            "value": "interpro:IPR001245"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "Raf"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "BRAF"
+                        },
+                        {
+                            "name": "Reported Genome Event Targeted",
+                            "value": "RAF"
+                        },
+                        {
+                            "name": "GuideToPharmacology Family ID",
+                            "value": "iuphar.family:610"
+                        },
+                        {
+                            "name": "GuideToPharmacology Family Name",
+                            "value": "RAF family"
+                        },
+                        {
+                            "name": "BRAF MUT/AMP",
+                            "value": "Reported Genome Event Targeted"
+                        },
+                        {
+                            "name": "BRAF MUT",
+                            "value": "Reported Genome Event Targeted"
+                        },
+                        {
+                            "name": "Target Subclass",
+                            "value": "EC:2.7.11.1"
+                        },
+                        {
+                            "name": "Target Class",
+                            "value": "Enzymes"
+                        },
+                        {
+                            "name": "Transmembrane Helix Count",
+                            "value": "0"
+                        },
+                        {
+                            "name": "Target Subclass",
+                            "value": "2.7.11.1"
+                        },
+                        {
+                            "name": "Target Main Class",
+                            "value": "Enzymes"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

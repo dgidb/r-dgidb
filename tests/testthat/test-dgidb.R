@@ -1,4 +1,4 @@
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Drugs", {
     results <- get_drugs(c("Imatinib"))
     expect_true(length(results$drug_name) > 0, "FAIL: DataFrame is non-empty")
@@ -46,7 +46,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Genes", {
     results <- get_genes(c("ereg"))
     expect_true(length(results$gene_name) > 0, "FAIL: DataFrame is non-empty")
@@ -66,7 +66,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Interactions By Genes", {
     results <- get_interactions(c("ereg"))
     expect_true(length(results$gene_name) > 0, "FAIL: Results are non-empty")
@@ -93,7 +93,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Interactions By Drugs", {
     results <- get_interactions(c("sunitinib"), search = "drugs")
     expect_true(length(results$drug_name) > 0, "FAIL: Results are non-empty")
@@ -123,7 +123,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Categories", {
     results <- get_categories(c("BRAF"))
     expect_true(length(results$gene_name) > 0, "FAIL: Results are non-empty")
@@ -133,7 +133,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Sources", {
     results <- get_sources()
     expect_true(
@@ -155,7 +155,7 @@ httptest::with_mock_dir("fixtures", {
   })
 })
 
-httptest::with_mock_dir("fixtures", {
+httptest::with_mock_api({
   test_that("Test Get Gene List", {
     results <- get_all_genes()
     expect_true(length(results$gene_name) == 9)
