@@ -67,13 +67,13 @@ httptest::with_mock_api({
 httptest::with_mock_api({
   # By Gene
   microbenchmark(
-    get_interactions(genes, search="genes"),
+    get_interactions(genes, search = "genes"),
     times = 100
   )
 
   # By Drug
   microbenchmark(
-    get_interactions(drugs, search="drugs"),
+    get_interactions(drugs, search = "drugs"),
     times = 100
   )
 })
