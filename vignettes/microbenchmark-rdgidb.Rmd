@@ -20,7 +20,7 @@ This vignette microbenchmarks functions from rdgidb
 
 ## Load Packages
 
-```{r setup}
+```{r setup, message=FALSE}
 library(rdgidb)
 library(microbenchmark)
 library(httptest)
@@ -41,11 +41,11 @@ drugs <- c("Imatinib")
 
 ## get_drugs()
 
-```{r benchmark-get-drugs}
+```{r benchmark-get-drugs, warning=FALSE}
 httptest::with_mock_api({
   microbenchmark(
     get_drugs(drugs),
-    times = 10
+    times = 100
   )
 })
 ```
@@ -56,7 +56,7 @@ httptest::with_mock_api({
 httptest::with_mock_api({
   microbenchmark(
     get_genes(genes),
-    times = 10
+    times = 100
   )
 })
 ```
@@ -68,13 +68,13 @@ httptest::with_mock_api({
   # By Gene
   microbenchmark(
     get_interactions(genes, search="genes"),
-    times = 10
+    times = 100
   )
 
   # By Drug
   microbenchmark(
     get_interactions(drugs, search="drugs"),
-    times = 10
+    times = 100
   )
 })
 ```
@@ -85,7 +85,7 @@ httptest::with_mock_api({
 httptest::with_mock_api({
   microbenchmark(
     get_categories(genes),
-    times = 10
+    times = 100
   )
 })
 ```
@@ -96,7 +96,7 @@ httptest::with_mock_api({
 httptest::with_mock_api({
   microbenchmark(
     get_sources(),
-    times = 10
+    times = 100
   )
 })
 ```
