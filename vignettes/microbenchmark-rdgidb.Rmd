@@ -64,14 +64,16 @@ httptest::with_mock_api({
 ## get_interactions()
 
 ```{r benchmark-get-interactions}
+# By Gene
 httptest::with_mock_api({
-  # By Gene
   microbenchmark(
     get_interactions(genes, search = "genes"),
     times = 100
   )
+})
 
-  # By Drug
+# By Drug
+httptest::with_mock_api({
   microbenchmark(
     get_interactions(drugs, search = "drugs"),
     times = 100
