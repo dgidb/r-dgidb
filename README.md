@@ -15,6 +15,9 @@ devtools::document()
 # Run tests
 devtools::test()
 
+# Build & Install vignettes
+devtools::install(build_vignettes = TRUE)
+
 # Check package
 devtools::check()
 ```
