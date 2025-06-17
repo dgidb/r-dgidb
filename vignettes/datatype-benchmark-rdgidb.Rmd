@@ -91,8 +91,7 @@ get_drugs_query <- function(
     encode = "json"
   )
   result <- httr::content(response)$data
-
-  return(result)
+  result
 }
 ```
 
@@ -163,7 +162,7 @@ get_drugs_original <- function(result) {
     )
   }
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
-  return(output)
+  output
 }
 ```
 
@@ -207,7 +206,7 @@ get_drugs_new_speed <- function(result) {
   }
   drug_attributes <- backfill_dicts(drug_attributes)
 
-  list(
+  output <- list(
     drug_name = drug_name,
     drug_concept_id = drug_concept_id,
     drug_aliases = drug_aliases,
@@ -218,6 +217,7 @@ get_drugs_new_speed <- function(result) {
     drug_approval_ratings = drug_approval_ratings,
     drug_fda_applications = drug_fda_applications
   )
+  output
 }
 ```
 
@@ -234,20 +234,20 @@ microbenchmark(
 get_drugs_new_compact <- function(result) {
   nodes <- result$drugs$nodes
   output <- list(
-    drug_name = sapply(nodes, function(x) x$name),
-    drug_concept_id = sapply(nodes, function(x) x$conceptId),
+    drug_name = vapply(nodes, function(x) x$name, character(1)),
+    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
     drug_aliases = lapply(nodes, function(x) vapply(x$drugAliases, function(a) a$alias, character(1))),
     drug_attributes = lapply(nodes, function(x) group_attributes(x$drugAttributes)),
-    drug_is_antineoplastic = sapply(nodes, function(x) x$antiNeoplastic),
-    drug_is_immunotherapy = sapply(nodes, function(x) x$immunotherapy),
-    drug_is_approved = sapply(nodes, function(x) x$approved),
+    drug_is_antineoplastic = vapply(nodes, function(x) x$antiNeoplastic, logical(1)),
+    drug_is_immunotherapy = vapply(nodes, function(x) x$immunotherapy, logical(1)),
+    drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
     drug_approval_ratings = lapply(nodes, function(x) {
       lapply(x$drugApprovalRatings, function(r) list(rating = r$rating, source = r$source$sourceDbName))
     }),
     drug_fda_applications = lapply(nodes, function(x) vapply(x$drugApplications, function(a) a$appNo, character(1)))
   )
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
-  return(output)
+  output
 }
 ```
 
@@ -264,7 +264,7 @@ microbenchmark(
 get_drugs_as_tibble <- function(result) {
   output <- get_drugs_new_speed(result)
   output <- tibble::as_tibble(output)
-  return(output)
+  output
 }
 ```
 
@@ -296,7 +296,7 @@ get_drugs_datatable <- function(result) {
   ))
   output <- data.table::rbindlist(node_list, fill = TRUE)
   output[, drug_attributes := list(backfill_dicts(drug_attributes))]
-  return(output)
+  output
 }
 ```
 
@@ -369,7 +369,7 @@ get_drugs_tibblify <- function(result) {
     ),
   )
   output <- tibblify::tibblify(result$drugs$nodes, tspec)
-  return(output)
+  output
 }
 ```
 

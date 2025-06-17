@@ -129,7 +129,7 @@ get_drugs <- function(
     )
   }
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
-  return(output)
+  output
 }
 
 #' Get Genes
@@ -179,7 +179,7 @@ get_genes <- function(terms, api_url = NULL) {
     )
   }
   output$gene_attributes <- backfill_dicts(output$gene_attributes)
-  return(output)
+  output
 }
 
 #' Get Interactions
@@ -327,7 +327,7 @@ get_interactions <- function(
     }
   }
   output$interaction_attributes <- backfill_dicts(output$interaction_attributes)
-  return(output)
+  output
 }
 
 #' Get Categories
@@ -385,7 +385,7 @@ get_categories <- function(terms, api_url = NULL) {
       )
     }
   }
-  return(output)
+  output
 }
 
 source_type <- list(
@@ -476,7 +476,7 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
       output$source_license_url, result$licenseLink
     )
   }
-  return(output)
+  output
 }
 
 #' Get All Genes
@@ -516,7 +516,7 @@ get_all_genes <- function(api_url = NULL) {
       genes$gene_concept_id, result$conceptId
     )
   }
-  return(genes)
+  genes
 }
 
 #' Get All Drugs
@@ -556,5 +556,5 @@ get_all_drugs <- function(api_url = NULL) {
       drugs$drug_concept_id, result$conceptId
     )
   }
-  return(drugs)
+  drugs
 }
