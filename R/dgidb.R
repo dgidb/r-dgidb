@@ -39,6 +39,30 @@ backfill_dicts <- function(col) {
   result
 }
 
+#' Post Query
+#'
+#' Sends a POST request to DGIdb GraphQL API with the specified paramters
+#'
+#' @param api_url
+#' API endpoint for GraphQL request
+#' @param query_file
+#' path to GraphQL query file
+#' @param variables
+#' variables to be passed to GraphQL query
+#' @return
+#' data from GraphQL API response
+post_query <- function(api_url, query_file, variables) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query_file_path <- system.file(query_file, package = "rdgidb")
+  query <- readr::read_file(query_file_path)
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = variables),
+    encode = "json"
+  )
+  httr::content(response)$data
+}
+
 #' Get Drugs
 #'
 #' Perform a record look up in DGIdb for a drug of interest
@@ -63,25 +87,9 @@ get_drugs <- function(
     antineoplastic = NULL,
     api_url = NULL) {
   params <- list(names = terms)
-  if (!is.null(immunotherapy)) {
-    params$immunotherapy <- immunotherapy
-  }
-  if (!is.null(antineoplastic)) {
-    params$antineoplastic <- antineoplastic
-  }
-
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_drugs.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = params),
-    encode = "json"
-  )
-  result <- httr::content(response)$data
+  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+  if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
+  results <- post_query(api_url, "queries/get_drugs.graphql", params)
 
   output <- list(
     drug_name = list(),
@@ -95,7 +103,7 @@ get_drugs <- function(
     drug_fda_applications = list()
   )
 
-  for (match in result$drugs$nodes) {
+  for (match in results$drugs$nodes) {
     output$drug_name <- append(
       output$drug_name, match$name
     )
@@ -144,18 +152,8 @@ get_drugs <- function(
 #' get_genes(c("BRAF", "PDGFRA"))
 #' @export
 get_genes <- function(terms, api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_genes.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = list(names = terms)),
-    encode = "json"
-  )
-  result <- httr::content(response)$data
+  params <- list(names = terms)
+  results <- post_query(api_url, "queries/get_genes.graphql", params)
 
   output <- list(
     gene_name = list(),
@@ -164,7 +162,7 @@ get_genes <- function(terms, api_url = NULL) {
     gene_attributes = list()
   )
 
-  for (match in result$genes$nodes) {
+  for (match in results$genes$nodes) {
     output$gene_name <- append(
       output$gene_name, match$name
     )
@@ -222,51 +220,25 @@ get_interactions <- function(
     approved = NULL,
     api_url = NULL) {
   params <- list(names = terms)
-  if (!is.null(immunotherapy)) {
-    params$immunotherapy <- immunotherapy
-  }
-  if (!is.null(antineoplastic)) {
-    params$antiNeoplastic <- antineoplastic
-  }
-  if (!is.null(source)) {
-    params$sourceDbName <- source
-  }
-  if (!is.null(pmid)) {
-    params$pmid <- pmid
-  }
-  if (!is.null(interaction_type)) {
-    params$interactionType <- interaction_type
-  }
-  if (!is.null(approved)) {
-    params$approved <- approved
-  }
-
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+  if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
+  if (!is.null(source)) params$sourceDbName <- source
+  if (!is.null(pmid)) params$pmid <- pmid
+  if (!is.null(interaction_type)) params$interactionType <- interaction_type
+  if (!is.null(approved)) params$approved <- approved
 
   if (search == "genes") {
-    query_file_path <- system.file(
+    results <- post_query(
+      api_url,
       "queries/get_interactions_by_gene.graphql",
-      package = "rdgidb"
-    )
-    query <- readr::read_file(query_file_path)
-    response <- httr::POST(
-      api_url,
-      body = list(query = query, variables = list(names = terms)),
-      encode = "json"
-    )
-    results <- httr::content(response)$data$genes$nodes
+      params
+    )$genes$nodes
   } else if (search == "drugs") {
-    query_file_path <- system.file(
-      "queries/get_interactions_by_drug.graphql",
-      package = "rdgidb"
-    )
-    query <- readr::read_file(query_file_path)
-    response <- httr::POST(
+    results <- post_query(
       api_url,
-      body = list(query = query, variables = list(names = terms)),
-      encode = "json"
-    )
-    results <- httr::content(response)$data$drugs$nodes
+      "queries/get_interactions_by_drug.graphql",
+      params
+    )$drugs$nodes
   } else {
     msg <- "Search type must be specified using: search='drugs' or search='genes'" # nolint: line_length_linter.
     stop(msg)
@@ -342,18 +314,8 @@ get_interactions <- function(
 #' get_categories(c("BRAF", "PDGFRA"))
 #' @export
 get_categories <- function(terms, api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_gene_categories.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = list(names = terms)),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  params <- list(names = terms)
+  results <- post_query(api_url, "queries/get_gene_categories.graphql", params)
 
   output <- list(
     gene_name = list(),
@@ -416,28 +378,8 @@ source_type <- list(
 #' sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
 #' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
-  source_param <- if (!is.null(source_type)) {
-    toupper(source_type)
-  } else {
-    NULL
-  }
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_sources.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  params <- if (is.null(source_type)) {
-    list()
-  } else {
-    list(sourceType = source_param)
-  }
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = params),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  params <- if (!is.null(source_type)) list(sourceType = toupper(source_type)) else list() # nolint: line_length_linter.
+  results <- post_query(api_url, "queries/get_sources.graphql", params)
 
   output <- list(
     source_name = list(),
@@ -490,18 +432,7 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
 #' get_all_genes()
 #' @export
 get_all_genes <- function(api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_all_genes.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  results <- post_query(api_url, "queries/get_all_genes.graphql", list())
 
   genes <- list(
     gene_name = list(),
@@ -530,18 +461,7 @@ get_all_genes <- function(api_url = NULL) {
 #' get_all_drugs()
 #' @export
 get_all_drugs <- function(api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_all_drugs.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  results <- post_query(api_url, "queries/get_all_drugs.graphql", list())
 
   drugs <- list(
     drug_name = list(),
