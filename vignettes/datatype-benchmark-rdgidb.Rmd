@@ -59,7 +59,7 @@ group_attributes <- function(row) {
   }
   grouped_dict
 }
- 
+
 backfill_dicts <- function(col) {
   keys <- unique(unlist(lapply(col, names)))
   result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
@@ -280,20 +280,24 @@ microbenchmark(
 ```{r datatable}
 get_drugs_datatable <- function(result) {
   nodes <- result$drugs$nodes
-  node_list <- lapply(nodes, function(x) list(
-    drug_name = x$name,
-    drug_concept_id = x$conceptId,
-    drug_aliases = list(vapply(x$drugAliases, function(a) a$alias, character(1))),
-    drug_attributes = list(group_attributes(x$drugAttributes)),
-    drug_is_antineoplastic = x$antiNeoplastic,
-    drug_is_immunotherapy = x$immunotherapy,
-    drug_is_approved = x$approved,
-    drug_approval_ratings = list(lapply(x$drugApprovalRatings, function(r) list(
-      rating = r$rating,
-      source = r$source$sourceDbName
-    ))),
-    drug_fda_applications = list(vapply(x$drugApplications, function(a) a$appNo, character(1)))
-  ))
+  node_list <- lapply(nodes, function(x) {
+    list(
+      drug_name = x$name,
+      drug_concept_id = x$conceptId,
+      drug_aliases = list(vapply(x$drugAliases, function(a) a$alias, character(1))),
+      drug_attributes = list(group_attributes(x$drugAttributes)),
+      drug_is_antineoplastic = x$antiNeoplastic,
+      drug_is_immunotherapy = x$immunotherapy,
+      drug_is_approved = x$approved,
+      drug_approval_ratings = list(lapply(x$drugApprovalRatings, function(r) {
+        list(
+          rating = r$rating,
+          source = r$source$sourceDbName
+        )
+      })),
+      drug_fda_applications = list(vapply(x$drugApplications, function(a) a$appNo, character(1)))
+    )
+  })
   output <- data.table::rbindlist(node_list, fill = TRUE)
   output[, drug_attributes := list(backfill_dicts(drug_attributes))]
   output
@@ -315,20 +319,20 @@ get_drugs_tibble <- function(result) {
   tibble::tibble(
     drug_name = purrr::map_chr(nodes, "name"),
     drug_concept_id = purrr::map_chr(nodes, "conceptId"),
-    drug_aliases = purrr::map(nodes, ~purrr::map_chr(.x$drugAliases, "alias")),
-    drug_attributes = purrr::map(nodes, ~group_attributes(.x$drugAttributes)),
+    drug_aliases = purrr::map(nodes, ~ purrr::map_chr(.x$drugAliases, "alias")),
+    drug_attributes = purrr::map(nodes, ~ group_attributes(.x$drugAttributes)),
     drug_is_antineoplastic = purrr::map_lgl(nodes, "antiNeoplastic"),
     drug_is_immunotherapy = purrr::map_lgl(nodes, "immunotherapy"),
     drug_is_approved = purrr::map_lgl(nodes, "approved"),
     drug_approval_ratings = purrr::map(
       nodes,
-      ~purrr::map(.x$drugApprovalRatings, ~list(rating = .x$rating, source = .x$source$sourceDbName))
+      ~ purrr::map(.x$drugApprovalRatings, ~ list(rating = .x$rating, source = .x$source$sourceDbName))
     ),
-    drug_fda_applications = purrr::map(nodes, ~purrr::map_chr(.x$drugApplications, "appNo"))
+    drug_fda_applications = purrr::map(nodes, ~ purrr::map_chr(.x$drugApplications, "appNo"))
   ) %>%
-  dplyr::mutate(
-    drug_attributes = backfill_dicts(drug_attributes)
-  )
+    dplyr::mutate(
+      drug_attributes = backfill_dicts(drug_attributes)
+    )
 }
 ```
 
@@ -346,7 +350,7 @@ get_drugs_tibblify <- function(result) {
   tspec <- tibblify::tspec_df(
     drug_name = tibblify::tib_chr("name"),
     drug_concept_id = tibblify::tib_chr("conceptId"),
-    drug_aliases  = tibblify::tib_df(
+    drug_aliases = tibblify::tib_df(
       "drugAliases",
       rating = tibblify::tib_chr("alias"),
     ),
@@ -358,12 +362,12 @@ get_drugs_tibblify <- function(result) {
     drug_is_antineoplastic = tibblify::tib_lgl("antiNeoplastic"),
     drug_is_immunotherapy = tibblify::tib_lgl("immunotherapy"),
     drug_is_approved = tibblify::tib_lgl("approved"),
-    drug_approval_ratings  = tibblify::tib_df(
+    drug_approval_ratings = tibblify::tib_df(
       "drugApprovalRatings",
       rating = tibblify::tib_chr("rating"),
       source = tibblify::tib_chr("source.sourceDbName", required = FALSE)
     ),
-    drug_fda_applications  = tibblify::tib_df(
+    drug_fda_applications = tibblify::tib_df(
       "drugApplications",
       rating = tibblify::tib_chr("appNo"),
     ),
