@@ -237,36 +237,24 @@ get_categories <- function(terms, api_url = NULL) {
   params <- list(names = terms)
   results <- post_query(api_url, "queries/get_gene_categories.graphql", params)
 
+  nodes <- results$genes$nodes
   output <- list(
-    gene_name = list(),
-    gene_concept_id = list(),
-    gene_full_name = list(),
-    gene_category = list(),
-    gene_category_sources = list()
+    gene_name = unlist(lapply(nodes, function(x) {
+      rep(x$name, length(x$geneCategoriesWithSources))
+    })),
+    gene_concept_id = unlist(lapply(nodes, function(x) {
+      rep(x$conceptId, length(x$geneCategoriesWithSources))
+    })),
+    gene_full_name = unlist(lapply(nodes, function(x) {
+      rep(x$longName, length(x$geneCategoriesWithSources))
+    })),
+    gene_category = unlist(lapply(nodes, function(x) {
+      vapply(x$geneCategoriesWithSources, function(y) y$name, character(1))
+    })),
+    gene_category_sources = unlist(lapply(nodes, function(x) {
+      lapply(x$geneCategoriesWithSources, function(y) y$sourceNames)
+    }), recursive = FALSE)
   )
-
-  for (result in results$genes$nodes) {
-    name <- result$name
-    long_name <- result$longName
-    concept_id <- result$conceptId
-    for (cat in result$geneCategoriesWithSources) {
-      output$gene_name <- append(
-        output$gene_name, name
-      )
-      output$gene_concept_id <- append(
-        output$gene_concept_id, concept_id
-      )
-      output$gene_full_name <- append(
-        output$gene_full_name, long_name
-      )
-      output$gene_category <- append(
-        output$gene_category, cat$name
-      )
-      output$gene_category_sources <- append(
-        output$gene_category_sources, cat$sourceNames
-      )
-    }
-  }
   output
 }
 
