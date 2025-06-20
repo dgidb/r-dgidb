@@ -39,6 +39,30 @@ backfill_dicts <- function(col) {
   result
 }
 
+#' Post Query
+#'
+#' Sends a POST request to DGIdb GraphQL API with the specified paramters
+#'
+#' @param api_url
+#' API endpoint for GraphQL request
+#' @param query_file
+#' path to GraphQL query file
+#' @param variables
+#' variables to be passed to GraphQL query
+#' @return
+#' data from GraphQL API response
+post_query <- function(api_url, query_file, variables) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query_file_path <- system.file(query_file, package = "rdgidb")
+  query <- readr::read_file(query_file_path)
+  response <- httr::POST(
+    api_url,
+    body = list(query = query, variables = variables),
+    encode = "json"
+  )
+  httr::content(response)$data
+}
+
 #' Get Drugs
 #'
 #' Perform a record look up in DGIdb for a drug of interest
@@ -63,73 +87,26 @@ get_drugs <- function(
     antineoplastic = NULL,
     api_url = NULL) {
   params <- list(names = terms)
-  if (!is.null(immunotherapy)) {
-    params$immunotherapy <- immunotherapy
-  }
-  if (!is.null(antineoplastic)) {
-    params$antineoplastic <- antineoplastic
-  }
+  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+  if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
+  results <- post_query(api_url, "queries/get_drugs.graphql", params)
 
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_drugs.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = params),
-    encode = "json"
-  )
-  result <- httr::content(response)$data
-
+  nodes <- results$drugs$nodes
   output <- list(
-    drug_name = list(),
-    drug_concept_id = list(),
-    drug_aliases = list(),
-    drug_attributes = list(),
-    drug_is_antineoplastic = list(),
-    drug_is_immunotherapy = list(),
-    drug_is_approved = list(),
-    drug_approval_ratings = list(),
-    drug_fda_applications = list()
+    drug_name = vapply(nodes, function(x) x$name, character(1)),
+    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
+    drug_aliases = lapply(nodes, function(x) vapply(x$drugAliases, function(a) a$alias, character(1))),
+    drug_attributes = lapply(nodes, function(x) group_attributes(x$drugAttributes)),
+    drug_is_antineoplastic = vapply(nodes, function(x) x$antiNeoplastic, logical(1)),
+    drug_is_immunotherapy = vapply(nodes, function(x) x$immunotherapy, logical(1)),
+    drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
+    drug_approval_ratings = lapply(nodes, function(x) {
+      lapply(x$drugApprovalRatings, function(r) list(rating = r$rating, source = r$source$sourceDbName))
+    }),
+    drug_fda_applications = lapply(nodes, function(x) vapply(x$drugApplications, function(a) a$appNo, character(1)))
   )
-
-  for (match in result$drugs$nodes) {
-    output$drug_name <- append(
-      output$drug_name, match$name
-    )
-    output$drug_concept_id <- append(
-      output$drug_concept_id, match$conceptId
-    )
-    output$drug_aliases <- append(
-      output$drug_aliases, list(lapply(match$drugAliases, function(a) a$alias))
-    )
-    output$drug_attributes <- append(
-      output$drug_attributes, list(group_attributes(match$drugAttributes))
-    )
-    output$drug_is_antineoplastic <- append(
-      output$drug_is_antineoplastic, match$antiNeoplastic
-    )
-    output$drug_is_immunotherapy <- append(
-      output$drug_is_immunotherapy, match$immunotherapy
-    )
-    output$drug_is_approved <- append(
-      output$drug_is_approved, match$approved
-    )
-    output$drug_approval_ratings <- append(
-      output$drug_approval_ratings,
-      list(lapply(match$drugApprovalRatings, function(r) {
-        list(rating = r$rating, source = r$source$sourceDbName)
-      }))
-    )
-    output$drug_fda_applications <- append(
-      output$drug_fda_applications,
-      list(lapply(match$drugApplications, function(app) app$appNo))
-    )
-  }
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
-  return(output)
+  output
 }
 
 #' Get Genes
@@ -144,42 +121,18 @@ get_drugs <- function(
 #' get_genes(c("BRAF", "PDGFRA"))
 #' @export
 get_genes <- function(terms, api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_genes.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = list(names = terms)),
-    encode = "json"
-  )
-  result <- httr::content(response)$data
+  params <- list(names = terms)
+  results <- post_query(api_url, "queries/get_genes.graphql", params)
 
+  nodes <- results$genes$nodes
   output <- list(
-    gene_name = list(),
-    gene_concept_id = list(),
-    gene_aliases = list(),
-    gene_attributes = list()
+    gene_name = vapply(nodes, function(x) x$name, character(1)),
+    gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
+    gene_aliases = lapply(nodes, function(x) vapply(x$geneAliases, function(a) a$alias, character(1))),
+    gene_attributes = lapply(nodes, function(x) group_attributes(x$geneAttributes))
   )
-
-  for (match in result$genes$nodes) {
-    output$gene_name <- append(
-      output$gene_name, match$name
-    )
-    output$gene_concept_id <- append(
-      output$gene_concept_id, match$conceptId
-    )
-    output$gene_aliases <- append(
-      output$gene_aliases, list(lapply(match$geneAliases, function(a) a$alias))
-    )
-    output$gene_attributes <- append(
-      output$gene_attributes, list(group_attributes(match$geneAttributes))
-    )
-  }
   output$gene_attributes <- backfill_dicts(output$gene_attributes)
-  return(output)
+  output
 }
 
 #' Get Interactions
@@ -222,112 +175,51 @@ get_interactions <- function(
     approved = NULL,
     api_url = NULL) {
   params <- list(names = terms)
-  if (!is.null(immunotherapy)) {
-    params$immunotherapy <- immunotherapy
-  }
-  if (!is.null(antineoplastic)) {
-    params$antiNeoplastic <- antineoplastic
-  }
-  if (!is.null(source)) {
-    params$sourceDbName <- source
-  }
-  if (!is.null(pmid)) {
-    params$pmid <- pmid
-  }
-  if (!is.null(interaction_type)) {
-    params$interactionType <- interaction_type
-  }
-  if (!is.null(approved)) {
-    params$approved <- approved
-  }
-
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+  if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
+  if (!is.null(source)) params$sourceDbName <- source
+  if (!is.null(pmid)) params$pmid <- pmid
+  if (!is.null(interaction_type)) params$interactionType <- interaction_type
+  if (!is.null(approved)) params$approved <- approved
 
   if (search == "genes") {
-    query_file_path <- system.file(
+    results <- post_query(
+      api_url,
       "queries/get_interactions_by_gene.graphql",
-      package = "rdgidb"
-    )
-    query <- readr::read_file(query_file_path)
-    response <- httr::POST(
-      api_url,
-      body = list(query = query, variables = list(names = terms)),
-      encode = "json"
-    )
-    results <- httr::content(response)$data$genes$nodes
+      params
+    )$genes$nodes
   } else if (search == "drugs") {
-    query_file_path <- system.file(
-      "queries/get_interactions_by_drug.graphql",
-      package = "rdgidb"
-    )
-    query <- readr::read_file(query_file_path)
-    response <- httr::POST(
+    results <- post_query(
       api_url,
-      body = list(query = query, variables = list(names = terms)),
-      encode = "json"
-    )
-    results <- httr::content(response)$data$drugs$nodes
+      "queries/get_interactions_by_drug.graphql",
+      params
+    )$drugs$nodes
   } else {
-    msg <- "Search type must be specified using: search='drugs' or search='genes'" # nolint: line_length_linter.
+    msg <- "Search type must be specified using: search='drugs' or search='genes'"
     stop(msg)
   }
 
+  nodes <- unlist(lapply(results, function(x) x$interactions), recursive = FALSE)
   output <- list(
-    gene_name = list(),
-    gene_concept_id = list(),
-    gene_long_name = list(),
-    drug_name = list(),
-    drug_concept_id = list(),
-    drug_approved = list(),
-    interaction_score = list(),
-    interaction_attributes = list(),
-    interaction_sources = list(),
-    interaction_pmids = list()
+    gene_name = vapply(nodes, function(x) x$gene$name, character(1)),
+    gene_concept_id = vapply(nodes, function(x) x$gene$conceptId, character(1)),
+    gene_long_name = vapply(nodes, function(x) x$gene$longName, character(1)),
+    drug_name = vapply(nodes, function(x) x$drug$name, character(1)),
+    drug_concept_id = vapply(nodes, function(x) x$drug$conceptId, character(1)),
+    drug_approved = vapply(nodes, function(x) x$drug$approved, logical(1)),
+    interaction_score = vapply(nodes, function(x) x$interactionScore, numeric(1)),
+    interaction_attributes = lapply(nodes, function(x) group_attributes(x$interactionAttributes)),
+    interaction_pmids = lapply(nodes, function(x) {
+      unlist(lapply(x$interactionClaims, function(y) {
+        vapply(y$publications, function(z) z$pmid, numeric(1))
+      }))
+    }),
+    interaction_sources = lapply(nodes, function(x) {
+      vapply(x$interactionClaims, function(y) y$source$sourceDbName, character(1))
+    })
   )
-
-  for (result in results) {
-    for (interaction in result$interactions) {
-      output$gene_name <- append(
-        output$gene_name, interaction$gene$name
-      )
-      output$gene_concept_id <- append(
-        output$gene_concept_id, interaction$gene$conceptId
-      )
-      output$gene_long_name <- append(
-        output$gene_long_name, interaction$gene$longName
-      )
-      output$drug_name <- append(
-        output$drug_name, interaction$drug$name
-      )
-      output$drug_concept_id <- append(
-        output$drug_concept_id, interaction$drug$conceptId
-      )
-      output$drug_approved <- append(
-        output$drug_approved, interaction$drug$approved
-      )
-      output$interaction_score <- append(
-        output$interaction_score, interaction$interactionScore
-      )
-      output$interaction_attributes <- append(
-        output$interaction_attributes,
-        list(group_attributes(interaction$interactionAttributes))
-      )
-      pubs <- list()
-      sources <- list()
-      for (claim in interaction$interactionClaims) {
-        sources <- append(sources, claim$source$sourceDbName)
-        pubs <- append(pubs, lapply(claim$publications, function(p) p$pmid))
-      }
-      output$interaction_pmids <- append(
-        output$interaction_pmids, list(pubs)
-      )
-      output$interaction_sources <- append(
-        output$interaction_sources, list(sources)
-      )
-    }
-  }
   output$interaction_attributes <- backfill_dicts(output$interaction_attributes)
-  return(output)
+  output
 }
 
 #' Get Categories
@@ -342,50 +234,28 @@ get_interactions <- function(
 #' get_categories(c("BRAF", "PDGFRA"))
 #' @export
 get_categories <- function(terms, api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_gene_categories.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = list(names = terms)),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  params <- list(names = terms)
+  results <- post_query(api_url, "queries/get_gene_categories.graphql", params)
 
+  nodes <- results$genes$nodes
   output <- list(
-    gene_name = list(),
-    gene_concept_id = list(),
-    gene_full_name = list(),
-    gene_category = list(),
-    gene_category_sources = list()
+    gene_name = unlist(lapply(nodes, function(x) {
+      rep(x$name, length(x$geneCategoriesWithSources))
+    })),
+    gene_concept_id = unlist(lapply(nodes, function(x) {
+      rep(x$conceptId, length(x$geneCategoriesWithSources))
+    })),
+    gene_full_name = unlist(lapply(nodes, function(x) {
+      rep(x$longName, length(x$geneCategoriesWithSources))
+    })),
+    gene_category = unlist(lapply(nodes, function(x) {
+      vapply(x$geneCategoriesWithSources, function(y) y$name, character(1))
+    })),
+    gene_category_sources = unlist(lapply(nodes, function(x) {
+      lapply(x$geneCategoriesWithSources, function(y) y$sourceNames)
+    }), recursive = FALSE)
   )
-
-  for (result in results$genes$nodes) {
-    name <- result$name
-    long_name <- result$longName
-    concept_id <- result$conceptId
-    for (cat in result$geneCategoriesWithSources) {
-      output$gene_name <- append(
-        output$gene_name, name
-      )
-      output$gene_concept_id <- append(
-        output$gene_concept_id, concept_id
-      )
-      output$gene_full_name <- append(
-        output$gene_full_name, long_name
-      )
-      output$gene_category <- append(
-        output$gene_category, cat$name
-      )
-      output$gene_category_sources <- append(
-        output$gene_category_sources, cat$sourceNames
-      )
-    }
-  }
-  return(output)
+  output
 }
 
 source_type <- list(
@@ -416,67 +286,21 @@ source_type <- list(
 #' sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
 #' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
-  source_param <- if (!is.null(source_type)) {
-    toupper(source_type)
-  } else {
-    NULL
-  }
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_sources.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  params <- if (is.null(source_type)) {
-    list()
-  } else {
-    list(sourceType = source_param)
-  }
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = params),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  params <- if (!is.null(source_type)) list(sourceType = toupper(source_type)) else list()
+  results <- post_query(api_url, "queries/get_sources.graphql", params)
 
+  nodes <- results$sources$nodes
   output <- list(
-    source_name = list(),
-    source_short_name = list(),
-    source_version = list(),
-    source_drug_claims = list(),
-    source_gene_claims = list(),
-    source_interaction_claims = list(),
-    source_license = list(),
-    source_license_url = list()
+    source_name = vapply(nodes, function(x) x$fullName, character(1)),
+    source_short_name = vapply(nodes, function(x) x$sourceDbName, character(1)),
+    source_version = vapply(nodes, function(x) x$sourceDbVersion, character(1)),
+    source_drug_claims = vapply(nodes, function(x) x$drugClaimsCount, numeric(1)),
+    source_gene_claims = vapply(nodes, function(x) x$geneClaimsCount, numeric(1)),
+    source_interaction_claims = vapply(nodes, function(x) x$interactionClaimsCount, numeric(1)),
+    source_license = vapply(nodes, function(x) x$license, character(1)),
+    source_license_url = vapply(nodes, function(x) x$licenseLink, character(1))
   )
-
-  for (result in results$sources$nodes) {
-    output$source_name <- append(
-      output$source_name, result$fullName
-    )
-    output$source_short_name <- append(
-      output$source_short_name, result$sourceDbName
-    )
-    output$source_version <- append(
-      output$source_version, result$sourceDbVersion
-    )
-    output$source_drug_claims <- append(
-      output$source_drug_claims, result$drugClaimsCount
-    )
-    output$source_gene_claims <- append(
-      output$source_gene_claims, result$geneClaimsCount
-    )
-    output$source_interaction_claims <- append(
-      output$source_interaction_claims, result$interactionClaimsCount
-    )
-    output$source_license <- append(
-      output$source_license, result$license
-    )
-    output$source_license_url <- append(
-      output$source_license_url, result$licenseLink
-    )
-  }
-  return(output)
+  output
 }
 
 #' Get All Genes
@@ -490,33 +314,14 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
 #' get_all_genes()
 #' @export
 get_all_genes <- function(api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_all_genes.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  results <- post_query(api_url, "queries/get_all_genes.graphql", list())
 
-  genes <- list(
-    gene_name = list(),
-    gene_concept_id = list()
+  nodes <- results$genes$nodes
+  output <- list(
+    gene_name = vapply(nodes, function(x) x$name, character(1)),
+    gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
   )
-
-  for (result in results$genes$nodes) {
-    genes$gene_name <- append(
-      genes$gene_name, result$name
-    )
-    genes$gene_concept_id <- append(
-      genes$gene_concept_id, result$conceptId
-    )
-  }
-  return(genes)
+  output
 }
 
 #' Get All Drugs
@@ -530,31 +335,12 @@ get_all_genes <- function(api_url = NULL) {
 #' get_all_drugs()
 #' @export
 get_all_drugs <- function(api_url = NULL) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_all_drugs.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query),
-    encode = "json"
-  )
-  results <- httr::content(response)$data
+  results <- post_query(api_url, "queries/get_all_drugs.graphql", list())
 
-  drugs <- list(
-    drug_name = list(),
-    drug_concept_id = list()
+  nodes <- results$drugs$nodes
+  output <- list(
+    drug_name = vapply(nodes, function(x) x$name, character(1)),
+    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
   )
-
-  for (result in results$drugs$nodes) {
-    drugs$drug_name <- append(
-      drugs$drug_name, result$name
-    )
-    drugs$drug_concept_id <- append(
-      drugs$drug_concept_id, result$conceptId
-    )
-  }
-  return(drugs)
+  output
 }

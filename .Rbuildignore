@@ -7,4 +7,4 @@
 ^.lintr$
 ^doc$
 ^Meta$
-
+^vignettes/datatype-benchmark-rdgidb.Rmd$
