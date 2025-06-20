@@ -299,7 +299,7 @@ get_drugs_datatable <- function(result) {
     )
   })
   output <- data.table::rbindlist(node_list, fill = TRUE)
-  output[, drug_attributes := list(backfill_dicts(drug_attributes))]
+  output[, drug_attributes := list(backfill_dicts(drug_attributes))] # nolint object_usage_linter
   output
 }
 ```
@@ -331,7 +331,7 @@ get_drugs_tibble <- function(result) {
     drug_fda_applications = purrr::map(nodes, ~ purrr::map_chr(.x$drugApplications, "appNo"))
   ) %>%
     dplyr::mutate(
-      drug_attributes = backfill_dicts(drug_attributes)
+      drug_attributes = backfill_dicts(drug_attributes) # nolint object_usage_linter
     )
 }
 ```
