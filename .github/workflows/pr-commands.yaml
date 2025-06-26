@@ -29,9 +29,6 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-renv@v2
-        with:
-          extra-packages: any::roxygen2
-          needs: pr-document
 
       - name: Document
         run: roxygen2::roxygenise()
