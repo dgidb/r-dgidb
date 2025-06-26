@@ -22,6 +22,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install sys dependencies
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev libx11-dev
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
