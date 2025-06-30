@@ -35,8 +35,8 @@ group_attributes <- function(row) {
 #' A list of dictionaries, where each dictionary contains all possible keys
 backfill_dicts <- function(col) {
   keys <- unique(unlist(lapply(col, names)))
-  result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
-  result
+  results <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
+  results
 }
 
 #' Post Query
@@ -55,12 +55,11 @@ post_query <- function(api_url, query_file, variables) {
   api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
   query_file_path <- system.file(query_file, package = "rdgidb")
   query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = variables),
-    encode = "json"
-  )
-  httr::content(response)$data
+  response <- httr2::request(api_url) |>
+    httr2::req_body_json(list(query = query, variables = variables)) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+  response$data
 }
 
 #' Get Drugs
@@ -286,7 +285,7 @@ source_type <- list(
 #' sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
 #' @export
 get_sources <- function(source_type = NULL, api_url = NULL) {
-  params <- if (!is.null(source_type)) list(sourceType = toupper(source_type)) else list()
+  params <- if (!is.null(source_type)) list(sourceType = toupper(source_type)) else NULL
   results <- post_query(api_url, "queries/get_sources.graphql", params)
 
   nodes <- results$sources$nodes
@@ -314,7 +313,7 @@ get_sources <- function(source_type = NULL, api_url = NULL) {
 #' get_all_genes()
 #' @export
 get_all_genes <- function(api_url = NULL) {
-  results <- post_query(api_url, "queries/get_all_genes.graphql", list())
+  results <- post_query(api_url, "queries/get_all_genes.graphql", NULL)
 
   nodes <- results$genes$nodes
   output <- list(
@@ -335,7 +334,7 @@ get_all_genes <- function(api_url = NULL) {
 #' get_all_drugs()
 #' @export
 get_all_drugs <- function(api_url = NULL) {
-  results <- post_query(api_url, "queries/get_all_drugs.graphql", list())
+  results <- post_query(api_url, "queries/get_all_drugs.graphql", NULL)
 
   nodes <- results$drugs$nodes
   output <- list(

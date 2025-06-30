@@ -29,7 +29,7 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 0.2430910705356227,
+                            "interactionScore": 0.2351522457607456,
                             "interactionClaims": [
                                 {
                                     "publications": [
@@ -46,8 +46,8 @@
 
                             ],
                             "drug": {
-                                "name": "HUMAN CHORIONIC GONADOTROPIN",
-                                "conceptId": "rxcui:340705",
+                                "name": "PANITUMUMAB",
+                                "conceptId": "rxcui:263034",
                                 "approved": true
                             },
                             "gene": {
@@ -66,17 +66,14 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 0.921187214661307,
+                            "interactionScore": 0.4350316546573794,
                             "interactionClaims": [
                                 {
                                     "publications": [
-                                        {
-                                            "citation": "Shimada M et al., 2006, Paracrine and autocrine regulation of epidermal growth factor-like factors in cumulus oocyte complexes and granulosa cells: key roles for prostaglandin synthase 2 and progesterone receptor., Mol Endocrinol",
-                                            "pmid": 16543407
-                                        }
+
                                     ],
                                     "source": {
-                                        "sourceDbName": "NCI"
+                                        "sourceDbName": "CIViC"
                                     }
                                 }
                             ]
@@ -117,7 +114,7 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 1.250182648468916,
+                            "interactionScore": 1.24294758473537,
                             "interactionClaims": [
                                 {
                                     "publications": [
@@ -125,6 +122,83 @@
                                     ],
                                     "source": {
                                         "sourceDbName": "GuideToPharmacology"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "interactionAttributes": [
+
+                            ],
+                            "drug": {
+                                "name": "HUMAN CHORIONIC GONADOTROPIN",
+                                "conceptId": "rxcui:340705",
+                                "approved": true
+                            },
+                            "gene": {
+                                "name": "EREG",
+                                "longName": "epiregulin",
+                                "conceptId": "hgnc:3443",
+                                "geneCategories": [
+                                    {
+                                        "name": "DRUGGABLE GENOME"
+                                    },
+                                    {
+                                        "name": "GROWTH FACTOR"
+                                    },
+                                    {
+                                        "name": "KINASE"
+                                    }
+                                ]
+                            },
+                            "interactionScore": 0.9158561150681672,
+                            "interactionClaims": [
+                                {
+                                    "publications": [
+                                        {
+                                            "citation": "Shimada M et al., 2006, Paracrine and autocrine regulation of epidermal growth factor-like factors in cumulus oocyte complexes and granulosa cells: key roles for prostaglandin synthase 2 and progesterone receptor., Mol Endocrinol",
+                                            "pmid": 16543407
+                                        }
+                                    ],
+                                    "source": {
+                                        "sourceDbName": "NCI"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "interactionAttributes": [
+
+                            ],
+                            "drug": {
+                                "name": "FEPIXNEBART",
+                                "conceptId": "chembl:CHEMBL4594573",
+                                "approved": false
+                            },
+                            "gene": {
+                                "name": "EREG",
+                                "longName": "epiregulin",
+                                "conceptId": "hgnc:3443",
+                                "geneCategories": [
+                                    {
+                                        "name": "DRUGGABLE GENOME"
+                                    },
+                                    {
+                                        "name": "GROWTH FACTOR"
+                                    },
+                                    {
+                                        "name": "KINASE"
+                                    }
+                                ]
+                            },
+                            "interactionScore": 4.350316546573794,
+                            "interactionClaims": [
+                                {
+                                    "publications": [
+
+                                    ],
+                                    "source": {
+                                        "sourceDbName": "TTD"
                                     }
                                 }
                             ]
@@ -161,7 +235,7 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 4.375639269641208,
+                            "interactionScore": 4.350316546573794,
                             "interactionClaims": [
                                 {
                                     "publications": [
@@ -169,80 +243,6 @@
                                     ],
                                     "source": {
                                         "sourceDbName": "ChEMBL"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-
-                            ],
-                            "drug": {
-                                "name": "FEPIXNEBART",
-                                "conceptId": "chembl:CHEMBL4594573",
-                                "approved": false
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 4.375639269641208,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "TTD"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-
-                            ],
-                            "drug": {
-                                "name": "PANITUMUMAB",
-                                "conceptId": "rxcui:263034",
-                                "approved": true
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 0.4375639269641209,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "CIViC"
                                     }
                                 }
                             ]

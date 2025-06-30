@@ -30,7 +30,7 @@ A data frame implementation was considered but ultimately rejected as tibbles ar
 
 ```{r setup, message=FALSE}
 library(microbenchmark)
-library(httptest)
+library(httptest2)
 
 library(data.table)
 library(tibble)
@@ -40,12 +40,17 @@ library(tibblify)
 ```
 
 ```{r, include = FALSE}
-httptest::start_vignette("datatype-benchmark-rdgidb")
+httptest2::start_vignette("datatype-benchmark-rdgidb")
 ```
 
 ## Helper Functions
 
 ```{r helper}
+api_endpoint_url <- Sys.getenv(
+  "DGIDB_API_URL",
+  unset = "https://dgidb.org/api/graphql"
+)
+
 group_attributes <- function(row) {
   grouped_dict <- list()
   for (attr in row) {
@@ -62,8 +67,19 @@ group_attributes <- function(row) {
 
 backfill_dicts <- function(col) {
   keys <- unique(unlist(lapply(col, names)))
-  result <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
-  result
+  results <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
+  results
+}
+
+post_query <- function(api_url, query_file, variables) {
+  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
+  query_file_path <- system.file(query_file, package = "rdgidb")
+  query <- readr::read_file(query_file_path)
+  response <- httr2::request(api_url) |>
+    httr2::req_body_json(list(query = query, variables = variables)) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+  response$data
 }
 
 get_drugs_query <- function(
@@ -72,26 +88,10 @@ get_drugs_query <- function(
     antineoplastic = NULL,
     api_url = NULL) {
   params <- list(names = terms)
-  if (!is.null(immunotherapy)) {
-    params$immunotherapy <- immunotherapy
-  }
-  if (!is.null(antineoplastic)) {
-    params$antineoplastic <- antineoplastic
-  }
-
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(
-    "queries/get_drugs.graphql",
-    package = "rdgidb"
-  )
-  query <- readr::read_file(query_file_path)
-  response <- httr::POST(
-    api_url,
-    body = list(query = query, variables = params),
-    encode = "json"
-  )
-  result <- httr::content(response)$data
-  result
+  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+  if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
+  results <- post_query(api_url, "queries/get_drugs.graphql", params)
+  results
 }
 ```
 
@@ -100,12 +100,7 @@ get_drugs_query <- function(
 ```{r inputs}
 drugs <- c("imatinib", "metronidazole", "sunitinib", "zalcitabine", "trastuzumab")
 
-api_endpoint_url <- Sys.getenv(
-  "DGIDB_API_URL",
-  unset = "https://dgidb.org/api/graphql"
-)
-
-result <- httptest::with_mock_api({
+results <- httptest2::with_mock_api({
   get_drugs_query(drugs)
 })
 ```
@@ -115,7 +110,7 @@ result <- httptest::with_mock_api({
 ## Original Implementation
 
 ```{r original}
-get_drugs_original <- function(result) {
+get_drugs_original <- function(results) {
   output <- list(
     drug_name = list(),
     drug_concept_id = list(),
@@ -128,7 +123,7 @@ get_drugs_original <- function(result) {
     drug_fda_applications = list()
   )
 
-  for (match in result$drugs$nodes) {
+  for (match in results$drugs$nodes) {
     output$drug_name <- append(
       output$drug_name, match$name
     )
@@ -168,7 +163,7 @@ get_drugs_original <- function(result) {
 
 ```{r original-benchmark}
 microbenchmark(
-  get_drugs_original(result),
+  get_drugs_original(results),
   times = 1000
 )
 ```
@@ -176,8 +171,8 @@ microbenchmark(
 ## New (Speed) Implementation
 
 ```{r new-speed}
-get_drugs_new_speed <- function(result) {
-  nodes <- result$drugs$nodes
+get_drugs_new_speed <- function(results) {
+  nodes <- results$drugs$nodes
   n <- length(nodes)
 
   drug_name <- character(n)
@@ -223,7 +218,7 @@ get_drugs_new_speed <- function(result) {
 
 ```{r new-speed-benchmark}
 microbenchmark(
-  get_drugs_new_speed(result),
+  get_drugs_new_speed(results),
   times = 1000
 )
 ```
@@ -231,8 +226,8 @@ microbenchmark(
 ## New (Compact) Implementation
 
 ```{r new-compact}
-get_drugs_new_compact <- function(result) {
-  nodes <- result$drugs$nodes
+get_drugs_new_compact <- function(results) {
+  nodes <- results$drugs$nodes
   output <- list(
     drug_name = vapply(nodes, function(x) x$name, character(1)),
     drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
@@ -253,7 +248,7 @@ get_drugs_new_compact <- function(result) {
 
 ```{r new-compact-benchmark}
 microbenchmark(
-  get_drugs_new_compact(result),
+  get_drugs_new_compact(results),
   times = 1000
 )
 ```
@@ -261,8 +256,8 @@ microbenchmark(
 ## As Tibble Implementation
 
 ```{r as-tibble}
-get_drugs_as_tibble <- function(result) {
-  output <- get_drugs_new_speed(result)
+get_drugs_as_tibble <- function(results) {
+  output <- get_drugs_new_speed(results)
   output <- tibble::as_tibble(output)
   output
 }
@@ -270,7 +265,7 @@ get_drugs_as_tibble <- function(result) {
 
 ```{r as-tibble-benchmark}
 microbenchmark(
-  get_drugs_as_tibble(result),
+  get_drugs_as_tibble(results),
   times = 1000
 )
 ```
@@ -278,8 +273,8 @@ microbenchmark(
 ## Data Table Implementation
 
 ```{r datatable}
-get_drugs_datatable <- function(result) {
-  nodes <- result$drugs$nodes
+get_drugs_datatable <- function(results) {
+  nodes <- results$drugs$nodes
   node_list <- lapply(nodes, function(x) {
     list(
       drug_name = x$name,
@@ -306,7 +301,7 @@ get_drugs_datatable <- function(result) {
 
 ```{r datatable-benchmark}
 microbenchmark(
-  get_drugs_datatable(result),
+  get_drugs_datatable(results),
   times = 1000
 )
 ```
@@ -314,8 +309,8 @@ microbenchmark(
 ## Tibble Implementation
 
 ```{r tibble}
-get_drugs_tibble <- function(result) {
-  nodes <- result$drugs$nodes
+get_drugs_tibble <- function(results) {
+  nodes <- results$drugs$nodes
   tibble::tibble(
     drug_name = purrr::map_chr(nodes, "name"),
     drug_concept_id = purrr::map_chr(nodes, "conceptId"),
@@ -338,7 +333,7 @@ get_drugs_tibble <- function(result) {
 
 ```{r tibble-benchmark}
 microbenchmark(
-  get_drugs_tibble(result),
+  get_drugs_tibble(results),
   times = 1000
 )
 ```
@@ -346,7 +341,7 @@ microbenchmark(
 ## Tibblify Implementation
 
 ```{r tibblify}
-get_drugs_tibblify <- function(result) {
+get_drugs_tibblify <- function(results) {
   tspec <- tibblify::tspec_df(
     drug_name = tibblify::tib_chr("name"),
     drug_concept_id = tibblify::tib_chr("conceptId"),
@@ -372,14 +367,18 @@ get_drugs_tibblify <- function(result) {
       rating = tibblify::tib_chr("appNo"),
     ),
   )
-  output <- tibblify::tibblify(result$drugs$nodes, tspec)
+  output <- tibblify::tibblify(results$drugs$nodes, tspec)
   output
 }
 ```
 
 ```{r tibblify-benchmark}
 microbenchmark(
-  get_drugs_tibblify(result),
+  get_drugs_tibblify(results),
   times = 1000
 )
+```
+
+```{r, include = FALSE}
+httptest2::end_vignette()
 ```

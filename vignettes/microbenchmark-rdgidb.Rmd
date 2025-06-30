@@ -23,11 +23,11 @@ This vignette microbenchmarks functions from rdgidb
 ```{r setup, message=FALSE}
 library(rdgidb)
 library(microbenchmark)
-library(httptest)
+library(httptest2)
 ```
 
 ```{r, include = FALSE}
-httptest::start_vignette("microbenchmark-rdgidb")
+httptest2::start_vignette("microbenchmark-rdgidb")
 ```
 
 ## Initalize Inputs
@@ -42,10 +42,10 @@ drugs <- c("Imatinib")
 ## get_drugs()
 
 ```{r benchmark-get-drugs, warning=FALSE}
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_drugs(drugs),
-    times = 100
+    times = 1000
   )
 })
 ```
@@ -53,10 +53,10 @@ httptest::with_mock_api({
 ## get_genes()
 
 ```{r benchmark-get-genes}
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_genes(genes),
-    times = 100
+    times = 1000
   )
 })
 ```
@@ -65,18 +65,18 @@ httptest::with_mock_api({
 
 ```{r benchmark-get-interactions}
 # By Gene
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_interactions(genes, search = "genes"),
-    times = 100
+    times = 1000
   )
 })
 
 # By Drug
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_interactions(drugs, search = "drugs"),
-    times = 100
+    times = 1000
   )
 })
 ```
@@ -84,10 +84,10 @@ httptest::with_mock_api({
 ## get_categories()
 
 ```{r benchmark-get-categories}
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_categories(genes),
-    times = 100
+    times = 1000
   )
 })
 ```
@@ -95,14 +95,14 @@ httptest::with_mock_api({
 ## get_sources()
 
 ```{r benchmark-get-sources}
-httptest::with_mock_api({
+httptest2::with_mock_api({
   microbenchmark(
     get_sources(),
-    times = 100
+    times = 1000
   )
 })
 ```
 
 ```{r, include = FALSE}
-httptest::end_vignette()
+httptest2::end_vignette()
 ```

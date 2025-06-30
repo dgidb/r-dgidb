@@ -3,6 +3,73 @@
         "drugs": {
             "nodes": [
                 {
+                    "name": "METRONIDAZOLE BENZOATE",
+                    "conceptId": "rxcui:103866",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE BENZOATE"
+                        },
+                        {
+                            "alias": "CIVIC.TID:17326"
+                        },
+                        {
+                            "alias": "NCIT:C87387"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE HYDROCHLORIDE",
+                    "conceptId": "rxcui:82047",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE HYDROCHLORIDE"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL1200869"
+                        },
+                        {
+                            "alias": "CIVIC.TID:8554"
+                        },
+                        {
+                            "alias": "NCIT:C48005"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
                     "name": "IMATINIB",
                     "conceptId": "rxcui:282388",
                     "drugAliases": [
@@ -13,74 +80,67 @@
                             "alias": "IMATINIB MESYLATE"
                         },
                         {
+                            "alias": "GLIVEC"
+                        },
+                        {
                             "alias": "CHEMBL:CHEMBL1642"
-                        },
-                        {
-                            "alias": "CHEMBL1642"
-                        },
-                        {
-                            "alias": "STI-571,CGP57148,CGP57148B"
-                        },
-                        {
-                            "alias": "GLEEVEC"
                         },
                         {
                             "alias": "NCIT:C1687"
                         },
                         {
-                            "alias": "STI 571"
-                        },
-                        {
-                            "alias": "GLIVEC"
-                        },
-                        {
-                            "alias": "STI-571"
-                        },
-                        {
-                            "alias": "PA10804"
-                        },
-                        {
-                            "alias": "DRUGBANK:DB00619"
-                        },
-                        {
-                            "alias": "CHEMBL941"
-                        },
-                        {
-                            "alias": "PUBCHEM.COMPOUND:123596"
+                            "alias": "GLEEVEC"
                         },
                         {
                             "alias": "STI571"
                         },
                         {
-                            "alias": "D0AZ3C"
-                        },
-                        {
-                            "alias": "D0R6RU"
+                            "alias": "CIVIC.TID:5"
                         },
                         {
                             "alias": "NCIT:C62035"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL941"
+                        },
+                        {
+                            "alias": "STI 571"
+                        },
+                        {
+                            "alias": "PHARMGKB.DRUG:PA10804"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0R6RU"
+                        },
+                        {
+                            "alias": "PUBCHEM.SUBSTANCE:178102314"
+                        },
+                        {
+                            "alias": "IUPHAR.LIGAND:5687"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00619"
+                        },
+                        {
+                            "alias": "STI-571,CGP57148,CGP57148B"
+                        },
+                        {
+                            "alias": "STI-571"
+                        },
+                        {
+                            "alias": "PUBCHEM.COMPOUND:123596"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0AZ3C"
+                        },
+                        {
+                            "alias": "CIVIC.TID:537"
                         }
                     ],
                     "drugAttributes": [
                         {
                             "name": "Year of Approval",
                             "value": "2001"
-                        },
-                        {
-                            "name": "Drug Class",
-                            "value": "Kinase Inhibitors"
-                        },
-                        {
-                            "name": "Drug Class",
-                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
-                        },
-                        {
-                            "name": "Drug Class",
-                            "value": "Small Molecule"
-                        },
-                        {
-                            "name": "Indication",
-                            "value": "antineoplastic agent"
                         },
                         {
                             "name": "Drug Class",
@@ -93,6 +153,22 @@
                         {
                             "name": "Drug Class",
                             "value": "BCR-ABL inhibitor 1st gen"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Kinase Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Small Molecule"
+                        },
+                        {
+                            "name": "Indication",
+                            "value": "antineoplastic agent"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
                         }
                     ],
                     "antiNeoplastic": true,
@@ -150,16 +226,10 @@
                             "appNo": "drugsatfda.anda:204644"
                         },
                         {
-                            "appNo": "drugsatfda.anda:205990"
-                        },
-                        {
                             "appNo": "drugsatfda.anda:206547"
                         },
                         {
                             "appNo": "drugsatfda.anda:207495"
-                        },
-                        {
-                            "appNo": "drugsatfda.anda:207586"
                         },
                         {
                             "appNo": "drugsatfda.anda:208302"
@@ -179,6 +249,268 @@
                         {
                             "appNo": "drugsatfda.nda:021588"
                         }
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE",
+                    "conceptId": "rxcui:6922",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE"
+                        },
+                        {
+                            "alias": "FLAGYL"
+                        },
+                        {
+                            "alias": "METROLOTION"
+                        },
+                        {
+                            "alias": "NYDAMAX"
+                        },
+                        {
+                            "alias": "NORITATE"
+                        },
+                        {
+                            "alias": "NUVESSA"
+                        },
+                        {
+                            "alias": "VANDAZOLE"
+                        },
+                        {
+                            "alias": "METROGEL"
+                        },
+                        {
+                            "alias": "METROCREAM"
+                        },
+                        {
+                            "alias": "ROSADAN"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL137"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00916"
+                        },
+                        {
+                            "alias": "NCIT:C651"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0A2ZX"
+                        },
+                        {
+                            "alias": "CIVIC.TID:10120"
+                        }
+                    ],
+                    "drugAttributes": [
+                        {
+                            "name": "Year of Approval",
+                            "value": "1960"
+                        }
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "HemOnc"
+                            }
+                        },
+                        {
+                            "rating": "Prescription",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Discontinued",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+                        {
+                            "appNo": "drugsatfda.anda:070027"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:070033"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:070772"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:076408"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:076522"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077197"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077264"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077549"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077819"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:078178"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:079065"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:079067"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:090222"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:090903"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:203458"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:203974"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:204651"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:205245"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:206191"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:206560"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208162"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208681"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:209794"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:211786"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212435"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212646"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:213648"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:215610"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:215794"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216323"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216692"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216795"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:217128"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:217665"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:218941"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:018657"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:018900"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:019737"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020208"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020334"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020531"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020743"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020901"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021789"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021806"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:205223"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:216755"
+                        }
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE PHOSPHATE",
+                    "conceptId": "ncit:C90619",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE PHOSPHATE"
+                        },
+                        {
+                            "alias": "CIVIC.TID:17789"
+                        },
+                        {
+                            "alias": "NCIT:C90619"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
                     ]
                 }
             ]
