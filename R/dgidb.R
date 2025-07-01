@@ -342,4 +342,4 @@ get_all_drugs <- function(api_url = NULL) {
     drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
   )
   output
-}
+}   
