@@ -14,11 +14,6 @@ httptest2::with_mock_api({
       c("imatinib", "metronidazole"),
       antineoplastic = TRUE
     )
-    # TODO: Revisit, Update, and Fix Tests
-    # expect_true(
-    #  !("METRONIDAZOLE" %in% filtered_results$drug_name),
-    #  "FAIL: Metronidazole is filtered out"
-    # )
     expect_true(
       "IMATINIB" %in% filtered_results$drug_name,
       "FAIL: Imatinib is retained by the filter"
