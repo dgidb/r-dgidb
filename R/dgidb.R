@@ -343,3 +343,4 @@ get_all_drugs <- function(api_url = NULL) {
   )
   output
 }
+
