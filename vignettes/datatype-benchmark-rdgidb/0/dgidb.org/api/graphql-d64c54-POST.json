@@ -1,0 +1,1213 @@
+{
+    "data": {
+        "drugs": {
+            "nodes": [
+                {
+                    "name": "TRASTUZUMAB CORIXETAN",
+                    "conceptId": "ncit:C188663",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB CORIXETAN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:25498"
+                        },
+                        {
+                            "alias": "NCIT:C188663"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB BOTIDOTIN",
+                    "conceptId": "ncit:C156480",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB BOTIDOTIN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:5057"
+                        },
+                        {
+                            "alias": "NCIT:C156480"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB VEDOTIN",
+                    "conceptId": "ncit:C174205",
+                    "drugAliases": [
+                        {
+                            "alias": "NCIT:C174205"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB VEDOTIN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:21026"
+                        },
+                        {
+                            "alias": "ANTI-HER2/MMAE ANTIBODY-DRUG CONJUGATE MRG002"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB BRENGITECAN",
+                    "conceptId": "ncit:C203071",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB BRENGITECAN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:26894"
+                        },
+                        {
+                            "alias": "NCIT:C203071"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB ENVEDOTIN",
+                    "conceptId": "ncit:C173962",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB ENVEDOTIN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:20981"
+                        },
+                        {
+                            "alias": "NCIT:C173962"
+                        },
+                        {
+                            "alias": "ANTI-HER2 ANTIBODY-DRUG CONJUGATE DP303C"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB CONJUGATE BI-CON-02",
+                    "conceptId": "ncit:C148165",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB CONJUGATE BI-CON-02"
+                        },
+                        {
+                            "alias": "CIVIC.TID:3436"
+                        },
+                        {
+                            "alias": "NCIT:C148165"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB IMBOTOLIMOD",
+                    "conceptId": "ncit:C172388",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB IMBOTOLIMOD"
+                        },
+                        {
+                            "alias": "CIVIC.TID:20706"
+                        },
+                        {
+                            "alias": "NCIT:C172388"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE BENZOATE",
+                    "conceptId": "rxcui:103866",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE BENZOATE"
+                        },
+                        {
+                            "alias": "CIVIC.TID:17326"
+                        },
+                        {
+                            "alias": "NCIT:C87387"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE HYDROCHLORIDE",
+                    "conceptId": "rxcui:82047",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE HYDROCHLORIDE"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL1200869"
+                        },
+                        {
+                            "alias": "CIVIC.TID:8554"
+                        },
+                        {
+                            "alias": "NCIT:C48005"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "IMATINIB",
+                    "conceptId": "rxcui:282388",
+                    "drugAliases": [
+                        {
+                            "alias": "IMATINIB"
+                        },
+                        {
+                            "alias": "IMATINIB MESYLATE"
+                        },
+                        {
+                            "alias": "GLIVEC"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL1642"
+                        },
+                        {
+                            "alias": "NCIT:C1687"
+                        },
+                        {
+                            "alias": "GLEEVEC"
+                        },
+                        {
+                            "alias": "STI571"
+                        },
+                        {
+                            "alias": "CIVIC.TID:5"
+                        },
+                        {
+                            "alias": "NCIT:C62035"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL941"
+                        },
+                        {
+                            "alias": "STI 571"
+                        },
+                        {
+                            "alias": "PHARMGKB.DRUG:PA10804"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0R6RU"
+                        },
+                        {
+                            "alias": "PUBCHEM.SUBSTANCE:178102314"
+                        },
+                        {
+                            "alias": "IUPHAR.LIGAND:5687"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00619"
+                        },
+                        {
+                            "alias": "STI-571,CGP57148,CGP57148B"
+                        },
+                        {
+                            "alias": "STI-571"
+                        },
+                        {
+                            "alias": "PUBCHEM.COMPOUND:123596"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0AZ3C"
+                        },
+                        {
+                            "alias": "CIVIC.TID:537"
+                        }
+                    ],
+                    "drugAttributes": [
+                        {
+                            "name": "Year of Approval",
+                            "value": "2001"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "MEK inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "KIT inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "BCR-ABL inhibitor 1st gen"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Kinase Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Small Molecule"
+                        },
+                        {
+                            "name": "Indication",
+                            "value": "antineoplastic agent"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
+                        }
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "HemOnc"
+                            }
+                        },
+                        {
+                            "rating": "Prescription",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Discontinued",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "TdgClinicalTrial"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+                        {
+                            "appNo": "drugsatfda.anda:078340"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:079179"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:204285"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:204644"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:206547"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:207495"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208302"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208429"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:210658"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212135"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212773"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021588"
+                        }
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB DUOCARMAZINE",
+                    "conceptId": "ncit:C118674",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB DUOCARMAZINE"
+                        },
+                        {
+                            "alias": "CIVIC.TID:1792"
+                        },
+                        {
+                            "alias": "NCIT:C118674"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL4298178"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Max Phase 3",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB",
+                    "conceptId": "rxcui:224905",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB-DKST"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB-PKRB"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB-ANNS"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB-QYYP"
+                        },
+                        {
+                            "alias": "TRASTUZUMAB-DTTB"
+                        },
+                        {
+                            "alias": "HERCEPTIN"
+                        },
+                        {
+                            "alias": "PUBCHEM.SUBSTANCE:50067185"
+                        },
+                        {
+                            "alias": "ANTI-ERBB2 MONOCLONAL ANTIBODY"
+                        },
+                        {
+                            "alias": "HER2 MONOCLONAL ANTIBODY"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00072"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D04WFL"
+                        },
+                        {
+                            "alias": "CIVIC.TID:84"
+                        },
+                        {
+                            "alias": "NCIT:C1647"
+                        },
+                        {
+                            "alias": "PUBCHEM.COMPOUND:9903"
+                        },
+                        {
+                            "alias": "PHARMGKB.DRUG:PA451743"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0HR7Z"
+                        },
+                        {
+                            "alias": "PF-05280014"
+                        },
+                        {
+                            "alias": "PUBCHEM.SUBSTANCE:178101775"
+                        },
+                        {
+                            "alias": "IUPHAR.LIGAND:5082"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL1201585"
+                        }
+                    ],
+                    "drugAttributes": [
+                        {
+                            "name": "Year of Approval",
+                            "value": "2019"
+                        },
+                        {
+                            "name": "Year of Approval",
+                            "value": "2017"
+                        },
+                        {
+                            "name": "Year of Approval",
+                            "value": "2018"
+                        },
+                        {
+                            "name": "Year of Approval",
+                            "value": "1998"
+                        },
+                        {
+                            "name": "Clinical Trial ID",
+                            "value": "NCT01235897"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Therapeutic Antibodies"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "monoclonal antibody"
+                        },
+                        {
+                            "name": "Indication",
+                            "value": "antineoplastic agent"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "ALK inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "ERBB2 inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "HSP90 inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Chemotherapy"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "MTOR inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Allosteric AKT inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "ERBB2 mAb inhibitor"
+                        },
+                        {
+                            "name": "Link to Clearity Drug Class Schematic",
+                            "value": "https://www.clearityfoundation.org/healthcare-pros/drugs-bio/clinicla-trial-agents/her2-inhibitors.aspx"
+                        },
+                        {
+                            "name": "Drug Subclass",
+                            "value": "Clinical Trial Agents (Approved in other Cancers)"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "HER2 Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Antineoplastic Agents"
+                        }
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": true,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "HemOnc"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "TdgClinicalTrial"
+                            }
+                        },
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "ZALCITABINE",
+                    "conceptId": "rxcui:3363",
+                    "drugAliases": [
+                        {
+                            "alias": "ZALCITABINE"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0Z9QR"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL853"
+                        },
+                        {
+                            "alias": "NCIT:C430"
+                        },
+                        {
+                            "alias": "2&APOS;,3&APOS;-DIDEOXYCYTIDINE"
+                        },
+                        {
+                            "alias": "DDC"
+                        },
+                        {
+                            "alias": "CIVIC.TID:8071"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00943"
+                        },
+                        {
+                            "alias": "2,3-DIDEOXYCYTIDINE"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB/TESIRINE ANTIBODY-DRUG CONJUGATE ADCT-502",
+                    "conceptId": "ncit:C139800",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB/TESIRINE ANTIBODY-DRUG CONJUGATE ADCT-502"
+                        },
+                        {
+                            "alias": "CIVIC.TID:3052"
+                        },
+                        {
+                            "alias": "NCIT:C139800"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE",
+                    "conceptId": "rxcui:6922",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE"
+                        },
+                        {
+                            "alias": "FLAGYL"
+                        },
+                        {
+                            "alias": "METROLOTION"
+                        },
+                        {
+                            "alias": "NYDAMAX"
+                        },
+                        {
+                            "alias": "NORITATE"
+                        },
+                        {
+                            "alias": "NUVESSA"
+                        },
+                        {
+                            "alias": "VANDAZOLE"
+                        },
+                        {
+                            "alias": "METROGEL"
+                        },
+                        {
+                            "alias": "METROCREAM"
+                        },
+                        {
+                            "alias": "ROSADAN"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL137"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB00916"
+                        },
+                        {
+                            "alias": "NCIT:C651"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0A2ZX"
+                        },
+                        {
+                            "alias": "CIVIC.TID:10120"
+                        }
+                    ],
+                    "drugAttributes": [
+                        {
+                            "name": "Year of Approval",
+                            "value": "1960"
+                        }
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "HemOnc"
+                            }
+                        },
+                        {
+                            "rating": "Prescription",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Discontinued",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+                        {
+                            "appNo": "drugsatfda.anda:070027"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:070033"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:070772"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:076408"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:076522"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077197"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077264"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077549"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:077819"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:078178"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:079065"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:079067"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:090222"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:090903"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:203458"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:203974"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:204651"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:205245"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:206191"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:206560"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208162"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:208681"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:209794"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:211786"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212435"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:212646"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:213648"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:215610"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:215794"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216323"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216692"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:216795"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:217128"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:217665"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:218941"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:018657"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:018900"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:019737"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020208"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020334"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020531"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020743"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:020901"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021789"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021806"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:205223"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:216755"
+                        }
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB/HYALURONIDASE-OYSK",
+                    "conceptId": "ncit:C158060",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB/HYALURONIDASE-OYSK"
+                        },
+                        {
+                            "alias": "CIVIC.TID:5468"
+                        },
+                        {
+                            "alias": "NCIT:C158060"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "SUNITINIB",
+                    "conceptId": "rxcui:357977",
+                    "drugAliases": [
+                        {
+                            "alias": "SUNITINIB"
+                        },
+                        {
+                            "alias": "SUNITINIB MALATE"
+                        },
+                        {
+                            "alias": "SUTENT"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL1567"
+                        },
+                        {
+                            "alias": "CHEMBL:CHEMBL535"
+                        },
+                        {
+                            "alias": "PUBCHEM.COMPOUND:5329102"
+                        },
+                        {
+                            "alias": "SU011248"
+                        },
+                        {
+                            "alias": "SU 011248"
+                        },
+                        {
+                            "alias": "NCIT:C26673"
+                        },
+                        {
+                            "alias": "SU11248"
+                        },
+                        {
+                            "alias": "PHARMGKB.DRUG:PA162372840"
+                        },
+                        {
+                            "alias": "PUBCHEM.SUBSTANCE:178102339"
+                        },
+                        {
+                            "alias": "IUPHAR.LIGAND:5713"
+                        },
+                        {
+                            "alias": "DRUGBANK:DB01268"
+                        },
+                        {
+                            "alias": "SU-11248"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0R0MW"
+                        },
+                        {
+                            "alias": "CIVIC.TID:157"
+                        },
+                        {
+                            "alias": "NCIT:C71622"
+                        },
+                        {
+                            "alias": "CIVIC.TID:19402"
+                        }
+                    ],
+                    "drugAttributes": [
+                        {
+                            "name": "Year of Approval",
+                            "value": "2006"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "VEGFR inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Pan-TK inhibitor"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Kinase Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Small Molecule"
+                        },
+                        {
+                            "name": "Indication",
+                            "value": "antineoplastic agent"
+                        }
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Prescribable",
+                            "source": {
+                                "sourceDbName": "RxNorm"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "HemOnc"
+                            }
+                        },
+                        {
+                            "rating": "Prescription",
+                            "source": {
+                                "sourceDbName": "Drugs@FDA"
+                            }
+                        },
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        },
+                        {
+                            "rating": "Approved",
+                            "source": {
+                                "sourceDbName": "TdgClinicalTrial"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+                        {
+                            "appNo": "drugsatfda.anda:201275"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:213803"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:213914"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:215843"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:218012"
+                        },
+                        {
+                            "appNo": "drugsatfda.anda:218615"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:021938"
+                        }
+                    ]
+                },
+                {
+                    "name": "TRASTUZUMAB REZETECAN",
+                    "conceptId": "ncit:C178312",
+                    "drugAliases": [
+                        {
+                            "alias": "TRASTUZUMAB REZETECAN"
+                        },
+                        {
+                            "alias": "CIVIC.TID:23099"
+                        },
+                        {
+                            "alias": "NCIT:C178312"
+                        },
+                        {
+                            "alias": "ANTI-HER2 ANTIBODY-DRUG CONJUGATE SHR-A1811"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                },
+                {
+                    "name": "METRONIDAZOLE PHOSPHATE",
+                    "conceptId": "ncit:C90619",
+                    "drugAliases": [
+                        {
+                            "alias": "METRONIDAZOLE PHOSPHATE"
+                        },
+                        {
+                            "alias": "CIVIC.TID:17789"
+                        },
+                        {
+                            "alias": "NCIT:C90619"
+                        }
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": true,
+                    "immunotherapy": false,
+                    "approved": false,
+                    "drugApprovalRatings": [
+
+                    ],
+                    "drugApplications": [
+
+                    ]
+                }
+            ]
+        }
+    }
+}
