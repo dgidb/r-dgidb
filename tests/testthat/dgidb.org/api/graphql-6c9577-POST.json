@@ -23,13 +23,13 @@
                             "alias": "VEGA:OTTHUMG00000130005"
                         },
                         {
-                            "alias": "ENA.EMBL:D30783"
-                        },
-                        {
-                            "alias": "UNIPROT:O14944"
+                            "alias": "IUPHAR:4918"
                         },
                         {
                             "alias": "REFSEQ:NM_001432"
+                        },
+                        {
+                            "alias": "CCDS:CCDS3564"
                         },
                         {
                             "alias": "UCSC:UC003HIE.2"
@@ -38,19 +38,19 @@
                             "alias": "OMIM:602061"
                         },
                         {
+                            "alias": "ENA.EMBL:D30783"
+                        },
+                        {
                             "alias": "PUBMED:9337852"
                         },
                         {
-                            "alias": "CCDS:CCDS3564"
-                        },
-                        {
-                            "alias": "IUPHAR:4918"
-                        },
-                        {
-                            "alias": "EPR"
+                            "alias": "UNIPROT:O14944"
                         },
                         {
                             "alias": "EP"
+                        },
+                        {
+                            "alias": "EPR"
                         },
                         {
                             "alias": "CHEMBL:CHEMBL4662939"
@@ -62,7 +62,22 @@
                             "alias": "CIVIC.GID:1737"
                         },
                         {
-                            "alias": "T79157"
+                            "alias": "NCBI.GENE:2069"
+                        },
+                        {
+                            "alias": "TTD.TARGET:T79157"
+                        },
+                        {
+                            "alias": "MITOGEN-ACTIVATED PROTEIN KINASE KINASE KINASE 1"
+                        },
+                        {
+                            "alias": "ENSEMBL:ENSG00000095015"
+                        },
+                        {
+                            "alias": "MAP3K1"
+                        },
+                        {
+                            "alias": "UNIPROT:Q13233"
                         }
                     ],
                     "geneAttributes": [
