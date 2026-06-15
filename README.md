@@ -1,5 +1,5 @@
 # r-dgidb
-In-progress R wrapper for DGIdb
+R wrapper for DGIdb
 
 # Development
 Use the renv package to install packages recorded in the renv lockfile 
