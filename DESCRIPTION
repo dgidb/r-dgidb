@@ -15,16 +15,19 @@ Description: R wrapper for accessing an instance of DGIdb v5 database. Currently
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports: 
     httr2,
     readr,
 Suggests: 
+    data.table,
     devtools,
+    dplyr,
     httptest2,
     knitr,
     microbenchmark,
     rmarkdown,
+    tibblify,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
