@@ -19,11 +19,14 @@ Imports:
     httr2,
     readr,
 Suggests: 
+    data.table,
     devtools,
+    dplyr,
     httptest2,
     knitr,
     microbenchmark,
     rmarkdown,
+    tibblify,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
