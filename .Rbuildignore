@@ -1,10 +1,2 @@
-^renv$
-^renv\.lock$
 ^\.github$
-^rdgidb\.Rproj$
-^\.Rproj\.user$
 ^LICENSE\.md$
-^.lintr$
-^doc$
-^Meta$
-^vignettes/datatype-benchmark-rdgidb.Rmd$

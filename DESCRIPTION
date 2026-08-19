@@ -1,6 +1,6 @@
-Package: rdgidb
-Title: R Wrapper for DGIdb
-Version: 0.0.1
+Package: rDGIdb
+Title: R Interface to the 'DGIdb' GraphQL API
+Version: 0.98.0
 Authors@R: c(
         person("Rohit", "Basu", 
                 email = "rohit.basu@nationwidechildrens.org", 
@@ -11,23 +11,24 @@ Authors@R: c(
         person("Matthew", "Cannon", 
                 email = "Matthew.Cannon2@nationwidechildrens.org", 
                 role = c("aut")))
-Description: R wrapper for accessing an instance of DGIdb v5 database. Currently supported searches will return individual interaction data for drugs or genes, category annotations for genes, or information for drugs.
+Description: Provides an R interface to the 'DGIdb' GraphQL API. The package supports
+        queries for drugs, genes, drug-gene interactions, gene categories, and DGIdb data sources.
+        It enables access to current DGIdb data for integration into R and Bioconductor workflows.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Depends:
+    R (>= 4.1.0)
+URL: https://github.com/dgidb/r-dgidb
+BugReports: https://github.com/dgidb/r-dgidb/issues
+biocViews: DataImport, BiomedicalInformatics
 Roxygen: list(markdown = TRUE)
 Imports: 
-    httr2,
-    readr,
+    httr2
 Suggests: 
-    data.table,
-    devtools,
-    dplyr,
     httptest2,
     knitr,
-    microbenchmark,
     rmarkdown,
-    tibblify,
-    testthat (>= 3.0.0)
+    testthat (>= 3.2.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
