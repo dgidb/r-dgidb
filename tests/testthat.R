@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(rdgidb)
+library(rDGIdb)
 
-test_check("rdgidb")
+test_check("rDGIdb")
