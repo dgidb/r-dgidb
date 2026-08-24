@@ -1,65 +1,55 @@
-api_endpoint_url <- Sys.getenv(
-  "DGIDB_API_URL",
-  unset = "https://dgidb.org/api/graphql"
+.apiEndpointUrl <- Sys.getenv(
+    "DGIDB_API_URL",
+    unset = "https://dgidb.org/api/graphql"
 )
 
-#' Group Attributes
+.groupAttributes <- function(row) {
+    values <- lapply(row, function(x) x$value)
+    keep <- !vapply(values, is.null, logical(1))
+    names <- vapply(row[keep], function(x) x$name, character(1))
+    keys <- unique(names)
+    stats::setNames(
+        lapply(keys, function(key) values[keep][names == key]),
+        keys
+    )
+}
+
+.backfillDicts <- function(col) {
+    keys <- unique(unlist(lapply(col, names), use.names = FALSE))
+    lapply(col, function(x) {
+        stats::setNames(lapply(keys, function(key) x[[key]]), keys)
+    })
+}
+
+#' Send a DGIdb Query
 #'
-#' Groups attributes by name and stores their values in a list
+#' Sends a GraphQL query to DGIdb.
 #'
-#' @param row
-#' A list of dictionaries of attributes
-#' @return
-#' A dictionary which maps each attribute to a list of associated values
-group_attributes <- function(row) {
-  grouped_dict <- list()
-  for (attr in row) {
-    if (is.null(attr$value)) {
-      next
-    } else if (attr$name %in% names(grouped_dict)) {
-      grouped_dict[[attr$name]] <- append(grouped_dict[[attr$name]], attr$value)
-    } else {
-      grouped_dict[[attr$name]] <- list(attr$value)
+#' @param apiUrl DGIdb GraphQL endpoint.
+#' @param queryFile Path to an installed GraphQL query file.
+#' @param variables Named list of GraphQL variables.
+#'
+#' @return The `data` field from the GraphQL response.
+#' @noRd
+.postQuery <- function(apiUrl, queryFile, variables) {
+    apiUrl <- if (!is.null(apiUrl)) apiUrl else .apiEndpointUrl
+    queryFilePath <- system.file(queryFile, package = "rDGIdb", mustWork = TRUE)
+    query <- readChar(
+        queryFilePath,
+        file.info(queryFilePath)$size,
+        useBytes = TRUE
+    )
+    response <- httr2::request(apiUrl) |>
+        httr2::req_headers("dgidb-client-name" = "rDGIdb") |>
+        httr2::req_body_json(list(query = query, variables = variables)) |>
+        httr2::req_timeout(30) |>
+        httr2::req_perform() |>
+        httr2::resp_body_json()
+    if (!is.null(response$errors)) {
+        messages <- vapply(response$errors, `[[`, character(1), "message")
+        stop(paste(messages, collapse = "\n"), call. = FALSE)
     }
-  }
-  grouped_dict
-}
-
-#' Backfill Dicts
-#'
-#' Fills missing values in a list of dictionaries
-#'
-#' @param col
-#' A list of dictionaries, where each dictionary might have missing keys
-#' @return
-#' A list of dictionaries, where each dictionary contains all possible keys
-backfill_dicts <- function(col) {
-  keys <- unique(unlist(lapply(col, names)))
-  results <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
-  results
-}
-
-#' Post Query
-#'
-#' Sends a POST request to DGIdb GraphQL API with the specified paramters
-#'
-#' @param api_url
-#' API endpoint for GraphQL request
-#' @param query_file
-#' path to GraphQL query file
-#' @param variables
-#' variables to be passed to GraphQL query
-#' @return
-#' data from GraphQL API response
-post_query <- function(api_url, query_file, variables) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(query_file, package = "rdgidb")
-  query <- readr::read_file(query_file_path)
-  response <- httr2::request(api_url) |>
-    httr2::req_body_json(list(query = query, variables = variables)) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
-  response$data
+    response$data
 }
 
 #' Get Drugs
