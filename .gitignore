@@ -8,3 +8,4 @@
 *.BiocCheck/
 doc/
 Meta/
+vignettes/*.html
