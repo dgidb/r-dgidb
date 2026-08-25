@@ -6,6 +6,58 @@
                     "interactions": [
                         {
                             "interactionAttributes": [
+                                {
+                                    "name": "Direct Interaction",
+                                    "value": "true"
+                                },
+                                {
+                                    "name": "Mechanism of Action",
+                                    "value": "Proepiregulin inhibitor"
+                                }
+                            ],
+                            "drug": {
+                                "name": "FEPIXNEBART",
+                                "conceptId": "chembl:CHEMBL4594573",
+                                "approved": false
+                            },
+                            "gene": {
+                                "name": "EREG",
+                                "longName": "epiregulin",
+                                "conceptId": "hgnc:3443",
+                                "geneCategories": [
+                                    {
+                                        "name": "DRUGGABLE GENOME"
+                                    },
+                                    {
+                                        "name": "GROWTH FACTOR"
+                                    },
+                                    {
+                                        "name": "KINASE"
+                                    }
+                                ]
+                            },
+                            "interactionScore": 13.23299737332068,
+                            "interactionClaims": [
+                                {
+                                    "publications": [
+
+                                    ],
+                                    "source": {
+                                        "sourceDbName": "ChEMBL"
+                                    }
+                                },
+                                {
+                                    "publications": [
+
+                                    ],
+                                    "source": {
+                                        "sourceDbName": "TTD"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "interactionAttributes": [
 
                             ],
                             "drug": {
@@ -29,14 +81,57 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 0.2351522457607456,
+                            "interactionScore": 0.735166520740038,
                             "interactionClaims": [
                                 {
                                     "publications": [
-
+                                        {
+                                            "citation": "Pentheroudakis G et al., 2013, Biomarkers of benefit from cetuximab-based therapy in metastatic colorectal cancer: interaction of EGFR ligand expression with RAS/RAF, PIK3CA genotypes., BMC Cancer",
+                                            "pmid": 23374602
+                                        }
                                     ],
                                     "source": {
                                         "sourceDbName": "CIViC"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "interactionAttributes": [
+
+                            ],
+                            "drug": {
+                                "name": "CHORIOGONADOTROPIN ALFA",
+                                "conceptId": "rxcui:283550",
+                                "approved": true
+                            },
+                            "gene": {
+                                "name": "EREG",
+                                "longName": "epiregulin",
+                                "conceptId": "hgnc:3443",
+                                "geneCategories": [
+                                    {
+                                        "name": "DRUGGABLE GENOME"
+                                    },
+                                    {
+                                        "name": "GROWTH FACTOR"
+                                    },
+                                    {
+                                        "name": "KINASE"
+                                    }
+                                ]
+                            },
+                            "interactionScore": 1.260285464125779,
+                            "interactionClaims": [
+                                {
+                                    "publications": [
+                                        {
+                                            "citation": "Shimada M et al., 2006, Paracrine and autocrine regulation of epidermal growth factor-like factors in cumulus oocyte complexes and granulosa cells: key roles for prostaglandin synthase 2 and progesterone receptor., Mol Endocrinol",
+                                            "pmid": 16543407
+                                        }
+                                    ],
+                                    "source": {
+                                        "sourceDbName": "NCI"
                                     }
                                 }
                             ]
@@ -66,183 +161,17 @@
                                     }
                                 ]
                             },
-                            "interactionScore": 0.4350316546573794,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "CIViC"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-                                {
-                                    "name": "Mechanism of Action",
-                                    "value": "Inhibition"
-                                },
-                                {
-                                    "name": "Endogenous Drug",
-                                    "value": "false"
-                                },
-                                {
-                                    "name": "Direct Interaction",
-                                    "value": "true"
-                                }
-                            ],
-                            "drug": {
-                                "name": "E6201",
-                                "conceptId": "iuphar.ligand:7836",
-                                "approved": false
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 1.24294758473537,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "GuideToPharmacology"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-
-                            ],
-                            "drug": {
-                                "name": "HUMAN CHORIONIC GONADOTROPIN",
-                                "conceptId": "rxcui:340705",
-                                "approved": true
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 0.9158561150681672,
+                            "interactionScore": 1.392947091928492,
                             "interactionClaims": [
                                 {
                                     "publications": [
                                         {
-                                            "citation": "Shimada M et al., 2006, Paracrine and autocrine regulation of epidermal growth factor-like factors in cumulus oocyte complexes and granulosa cells: key roles for prostaglandin synthase 2 and progesterone receptor., Mol Endocrinol",
-                                            "pmid": 16543407
+                                            "citation": "Seligmann JF et al., 2016, Combined Epiregulin and Amphiregulin Expression Levels as a Predictive Biomarker for Panitumumab Therapy Benefit or Lack of Benefit in Patients With RAS Wild-Type Advanced Colorectal Cancer., JAMA Oncol",
+                                            "pmid": 26867820
                                         }
                                     ],
                                     "source": {
-                                        "sourceDbName": "NCI"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-
-                            ],
-                            "drug": {
-                                "name": "FEPIXNEBART",
-                                "conceptId": "chembl:CHEMBL4594573",
-                                "approved": false
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 4.350316546573794,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "TTD"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "interactionAttributes": [
-                                {
-                                    "name": "Direct Interaction",
-                                    "value": "true"
-                                },
-                                {
-                                    "name": "Mechanism of Action",
-                                    "value": "Proepiregulin inhibitor"
-                                }
-                            ],
-                            "drug": {
-                                "name": "FEPIXNEBART",
-                                "conceptId": "ncit:C188574",
-                                "approved": false
-                            },
-                            "gene": {
-                                "name": "EREG",
-                                "longName": "epiregulin",
-                                "conceptId": "hgnc:3443",
-                                "geneCategories": [
-                                    {
-                                        "name": "DRUGGABLE GENOME"
-                                    },
-                                    {
-                                        "name": "GROWTH FACTOR"
-                                    },
-                                    {
-                                        "name": "KINASE"
-                                    }
-                                ]
-                            },
-                            "interactionScore": 4.350316546573794,
-                            "interactionClaims": [
-                                {
-                                    "publications": [
-
-                                    ],
-                                    "source": {
-                                        "sourceDbName": "ChEMBL"
+                                        "sourceDbName": "CIViC"
                                     }
                                 }
                             ]

@@ -7,22 +7,28 @@
                     "conceptId": "rxcui:282388",
                     "drugAliases": [
                         {
-                            "alias": "IMATINIB"
-                        },
-                        {
                             "alias": "IMATINIB MESYLATE"
                         },
                         {
-                            "alias": "GLIVEC"
+                            "alias": "DRUGBANK:DB00619"
                         },
                         {
-                            "alias": "CHEMBL:CHEMBL1642"
+                            "alias": "CHEMBL:CHEMBL941"
                         },
                         {
                             "alias": "NCIT:C1687"
                         },
                         {
                             "alias": "GLEEVEC"
+                        },
+                        {
+                            "alias": "GLIVEC"
+                        },
+                        {
+                            "alias": "STI-571"
+                        },
+                        {
+                            "alias": "TTD.DRUG:D0R6RU"
                         },
                         {
                             "alias": "STI571"
@@ -34,37 +40,25 @@
                             "alias": "NCIT:C62035"
                         },
                         {
-                            "alias": "CHEMBL:CHEMBL941"
+                            "alias": "PHARMGKB.DRUG:PA10804"
+                        },
+                        {
+                            "alias": "STI-571,CGP57148,CGP57148B"
+                        },
+                        {
+                            "alias": "PUBCHEM.COMPOUND:123596"
                         },
                         {
                             "alias": "STI 571"
                         },
                         {
-                            "alias": "PHARMGKB.DRUG:PA10804"
-                        },
-                        {
-                            "alias": "TTD.DRUG:D0R6RU"
+                            "alias": "TTD.DRUG:D0AZ3C"
                         },
                         {
                             "alias": "PUBCHEM.SUBSTANCE:178102314"
                         },
                         {
                             "alias": "IUPHAR.LIGAND:5687"
-                        },
-                        {
-                            "alias": "DRUGBANK:DB00619"
-                        },
-                        {
-                            "alias": "STI-571,CGP57148,CGP57148B"
-                        },
-                        {
-                            "alias": "STI-571"
-                        },
-                        {
-                            "alias": "PUBCHEM.COMPOUND:123596"
-                        },
-                        {
-                            "alias": "TTD.DRUG:D0AZ3C"
                         },
                         {
                             "alias": "CIVIC.TID:537"
@@ -74,6 +68,14 @@
                         {
                             "name": "Year of Approval",
                             "value": "2001"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
+                        },
+                        {
+                            "name": "Drug Class",
+                            "value": "Kinase Inhibitors"
                         },
                         {
                             "name": "Drug Class",
@@ -89,19 +91,11 @@
                         },
                         {
                             "name": "Drug Class",
-                            "value": "Kinase Inhibitors"
-                        },
-                        {
-                            "name": "Drug Class",
                             "value": "Small Molecule"
                         },
                         {
                             "name": "Indication",
                             "value": "antineoplastic agent"
-                        },
-                        {
-                            "name": "Drug Class",
-                            "value": "Antineoplastic Agents, Protein Kinase Inhibitors"
                         }
                     ],
                     "antiNeoplastic": true,
@@ -121,21 +115,15 @@
                             }
                         },
                         {
-                            "rating": "Prescription",
-                            "source": {
-                                "sourceDbName": "Drugs@FDA"
-                            }
-                        },
-                        {
                             "rating": "Discontinued",
                             "source": {
                                 "sourceDbName": "Drugs@FDA"
                             }
                         },
                         {
-                            "rating": "Max Phase 4",
+                            "rating": "Prescription",
                             "source": {
-                                "sourceDbName": "ChEMBL"
+                                "sourceDbName": "Drugs@FDA"
                             }
                         },
                         {
@@ -162,16 +150,10 @@
                             "appNo": "drugsatfda.anda:206547"
                         },
                         {
-                            "appNo": "drugsatfda.anda:207495"
-                        },
-                        {
                             "appNo": "drugsatfda.anda:208302"
                         },
                         {
                             "appNo": "drugsatfda.anda:208429"
-                        },
-                        {
-                            "appNo": "drugsatfda.anda:210658"
                         },
                         {
                             "appNo": "drugsatfda.anda:212135"
@@ -180,8 +162,38 @@
                             "appNo": "drugsatfda.anda:212773"
                         },
                         {
+                            "appNo": "drugsatfda.anda:212975"
+                        },
+                        {
                             "appNo": "drugsatfda.nda:021588"
+                        },
+                        {
+                            "appNo": "drugsatfda.nda:219097"
                         }
+                    ]
+                },
+                {
+                    "name": "IMATINIB MESYLATE",
+                    "conceptId": "chembl:CHEMBL1642",
+                    "drugAliases": [
+
+                    ],
+                    "drugAttributes": [
+
+                    ],
+                    "antiNeoplastic": false,
+                    "immunotherapy": false,
+                    "approved": true,
+                    "drugApprovalRatings": [
+                        {
+                            "rating": "Max Phase 4",
+                            "source": {
+                                "sourceDbName": "ChEMBL"
+                            }
+                        }
+                    ],
+                    "drugApplications": [
+
                     ]
                 }
             ]

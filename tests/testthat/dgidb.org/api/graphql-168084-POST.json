@@ -5,9 +5,9 @@
                 {
                     "fullName": "NCBI Gene",
                     "sourceDbName": "NCBI",
-                    "sourceDbVersion": "20241126",
+                    "sourceDbVersion": "20260622",
                     "drugClaimsCount": 0,
-                    "geneClaimsCount": 12079,
+                    "geneClaimsCount": 11684,
                     "interactionClaimsCount": 0,
                     "license": "Custom",
                     "licenseLink": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
@@ -15,9 +15,9 @@
                 {
                     "fullName": "HUGO Gene Nomenclature Committee",
                     "sourceDbName": "HGNC",
-                    "sourceDbVersion": "20241122",
+                    "sourceDbVersion": "20260619",
                     "drugClaimsCount": 0,
-                    "geneClaimsCount": 11925,
+                    "geneClaimsCount": 11655,
                     "interactionClaimsCount": 0,
                     "license": "Custom",
                     "licenseLink": "https://www.genenames.org/about/"
@@ -25,9 +25,9 @@
                 {
                     "fullName": "Ensembl",
                     "sourceDbName": "Ensembl",
-                    "sourceDbVersion": "113",
+                    "sourceDbVersion": "116",
                     "drugClaimsCount": 0,
-                    "geneClaimsCount": 11759,
+                    "geneClaimsCount": 11583,
                     "interactionClaimsCount": 0,
                     "license": "Custom",
                     "licenseLink": "https://useast.ensembl.org/info/about/legal/disclaimer.html"
