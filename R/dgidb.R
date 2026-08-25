@@ -14,7 +14,7 @@
     )
 }
 
-.backfillDicts <- function(col) {
+.backfillAttributes <- function(col) {
     keys <- unique(unlist(lapply(col, names), use.names = FALSE))
     lapply(col, function(x) {
         stats::setNames(lapply(keys, function(key) x[[key]]), keys)
