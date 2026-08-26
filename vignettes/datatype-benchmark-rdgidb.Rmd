@@ -83,7 +83,7 @@ post_query <- function(api_url, query_file, variables) {
 }
 
 get_drugs_query <- function(
-    terms,
+  terms,
     immunotherapy = NULL,
     antineoplastic = NULL,
     api_url = NULL) {

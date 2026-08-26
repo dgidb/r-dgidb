@@ -81,7 +81,7 @@ post_query <- function(api_url, query_file, variables) {
 #' get_drugs(c("Imatinib"))
 #' @export
 get_drugs <- function(
-    terms,
+  terms,
     immunotherapy = NULL,
     antineoplastic = NULL,
     api_url = NULL) {
@@ -164,7 +164,7 @@ get_genes <- function(terms, api_url = NULL) {
 #' get_interactions(c("BRAF", "PDGFRA"))
 #' @export
 get_interactions <- function(
-    terms,
+  terms,
     search = "genes",
     immunotherapy = NULL,
     antineoplastic = NULL,
