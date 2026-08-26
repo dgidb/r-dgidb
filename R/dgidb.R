@@ -82,9 +82,9 @@ post_query <- function(api_url, query_file, variables) {
 #' @export
 get_drugs <- function(
   terms,
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    api_url = NULL) {
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  api_url = NULL) {
   params <- list(names = terms)
   if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
   if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
@@ -92,17 +92,17 @@ get_drugs <- function(
 
   nodes <- results$drugs$nodes
   output <- list(
-    drug_name = vapply(nodes, function(x) x$name, character(1)),
-    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
-    drug_aliases = lapply(nodes, function(x) vapply(x$drugAliases, function(a) a$alias, character(1))),
-    drug_attributes = lapply(nodes, function(x) group_attributes(x$drugAttributes)),
-    drug_is_antineoplastic = vapply(nodes, function(x) x$antiNeoplastic, logical(1)),
-    drug_is_immunotherapy = vapply(nodes, function(x) x$immunotherapy, logical(1)),
-    drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
-    drug_approval_ratings = lapply(nodes, function(x) {
+  drug_name = vapply(nodes, function(x) x$name, character(1)),
+  drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
+  drug_aliases = lapply(nodes, function(x) vapply(x$drugAliases, function(a) a$alias, character(1))),
+  drug_attributes = lapply(nodes, function(x) group_attributes(x$drugAttributes)),
+  drug_is_antineoplastic = vapply(nodes, function(x) x$antiNeoplastic, logical(1)),
+  drug_is_immunotherapy = vapply(nodes, function(x) x$immunotherapy, logical(1)),
+  drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
+  drug_approval_ratings = lapply(nodes, function(x) {
       lapply(x$drugApprovalRatings, function(r) list(rating = r$rating, source = r$source$sourceDbName))
     }),
-    drug_fda_applications = lapply(nodes, function(x) vapply(x$drugApplications, function(a) a$appNo, character(1)))
+  drug_fda_applications = lapply(nodes, function(x) vapply(x$drugApplications, function(a) a$appNo, character(1)))
   )
   output$drug_attributes <- backfill_dicts(output$drug_attributes)
   output
@@ -165,14 +165,14 @@ get_genes <- function(terms, api_url = NULL) {
 #' @export
 get_interactions <- function(
   terms,
-    search = "genes",
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    source = NULL,
-    pmid = NULL,
-    interaction_type = NULL,
-    approved = NULL,
-    api_url = NULL) {
+  search = "genes",
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  source = NULL,
+  pmid = NULL,
+  interaction_type = NULL,
+  approved = NULL,
+  api_url = NULL) {
   params <- list(names = terms)
   if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
   if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
