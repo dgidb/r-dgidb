@@ -1,4 +1,11 @@
-.Rproj.user
-inst/doc
-/doc/
-/Meta/
+.Rproj.user/
+.Rhistory
+.RData
+.Renviron
+.DS_Store
+*.tar.gz
+*.Rcheck/
+*.BiocCheck/
+doc/
+Meta/
+vignettes/*.html

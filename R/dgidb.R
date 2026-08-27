@@ -1,345 +1,506 @@
-api_endpoint_url <- Sys.getenv(
-  "DGIDB_API_URL",
-  unset = "https://dgidb.org/api/graphql"
+.apiEndpointUrl <- Sys.getenv(
+    "DGIDB_API_URL",
+    unset = "https://dgidb.org/api/graphql"
 )
+.fdaEndpointUrl <- "https://api.fda.gov/drug/drugsfda.json"
 
-#' Group Attributes
+.groupAttributes <- function(row) {
+    values <- lapply(row, function(x) x$value)
+    keep <- !vapply(values, is.null, logical(1))
+    names <- vapply(row[keep], function(x) x$name, character(1))
+    keys <- unique(names)
+    stats::setNames(
+        lapply(keys, function(key) values[keep][names == key]),
+        keys
+    )
+}
+
+.backfillAttributes <- function(col) {
+    keys <- unique(unlist(lapply(col, names), use.names = FALSE))
+    lapply(col, function(x) {
+        stats::setNames(lapply(keys, function(key) x[[key]]), keys)
+    })
+}
+
+#' Send a DGIdb Query
 #'
-#' Groups attributes by name and stores their values in a list
+#' Sends a GraphQL query to DGIdb.
 #'
-#' @param row
-#' A list of dictionaries of attributes
-#' @return
-#' A dictionary which maps each attribute to a list of associated values
-group_attributes <- function(row) {
-  grouped_dict <- list()
-  for (attr in row) {
-    if (is.null(attr$value)) {
-      next
-    } else if (attr$name %in% names(grouped_dict)) {
-      grouped_dict[[attr$name]] <- append(grouped_dict[[attr$name]], attr$value)
-    } else {
-      grouped_dict[[attr$name]] <- list(attr$value)
+#' @param apiUrl DGIdb GraphQL endpoint.
+#' @param queryFile Path to an installed GraphQL query file.
+#' @param variables Named list of GraphQL variables.
+#'
+#' @return The `data` field from the GraphQL response.
+#' @noRd
+.postQuery <- function(apiUrl, queryFile, variables) {
+    apiUrl <- if (!is.null(apiUrl)) apiUrl else .apiEndpointUrl
+    queryFilePath <- system.file(queryFile, package = "rDGIdb", mustWork = TRUE)
+    query <- readChar(
+        queryFilePath,
+        file.info(queryFilePath)$size,
+        useBytes = TRUE
+    )
+    response <- httr2::request(apiUrl) |>
+        httr2::req_headers("dgidb-client-name" = "rDGIdb") |>
+        httr2::req_body_json(list(query = query, variables = variables)) |>
+        httr2::req_timeout(30) |>
+        httr2::req_perform() |>
+        httr2::resp_body_json()
+    if (!is.null(response$errors)) {
+        messages <- vapply(response$errors, `[[`, character(1), "message")
+        stop(paste(messages, collapse = "\n"), call. = FALSE)
     }
-  }
-  grouped_dict
+    response$data
 }
 
-#' Backfill Dicts
-#'
-#' Fills missing values in a list of dictionaries
-#'
-#' @param col
-#' A list of dictionaries, where each dictionary might have missing keys
-#' @return
-#' A list of dictionaries, where each dictionary contains all possible keys
-backfill_dicts <- function(col) {
-  keys <- unique(unlist(lapply(col, names)))
-  results <- lapply(col, function(cell) sapply(keys, function(key) cell[[key]]))
-  results
+.getFdaProducts <- function(application) {
+    response <- httr2::request(.fdaEndpointUrl) |>
+        httr2::req_url_query(
+            search = paste0("openfda.application_number:", application),
+            limit = 1
+        ) |>
+        httr2::req_timeout(30) |>
+        httr2::req_error(is_error = function(resp) {
+            !httr2::resp_status(resp) %in% c(200L, 404L)
+        }) |>
+        httr2::req_perform()
+
+    if (httr2::resp_status(response) == 404L) {
+        return(list())
+    }
+    httr2::resp_body_json(response)$results[[1]]$products
 }
 
-#' Post Query
-#'
-#' Sends a POST request to DGIdb GraphQL API with the specified paramters
-#'
-#' @param api_url
-#' API endpoint for GraphQL request
-#' @param query_file
-#' path to GraphQL query file
-#' @param variables
-#' variables to be passed to GraphQL query
-#' @return
-#' data from GraphQL API response
-post_query <- function(api_url, query_file, variables) {
-  api_url <- if (!is.null(api_url)) api_url else api_endpoint_url
-  query_file_path <- system.file(query_file, package = "rdgidb")
-  query <- readr::read_file(query_file_path)
-  response <- httr2::request(api_url) |>
-    httr2::req_body_json(list(query = query, variables = variables)) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json()
-  response$data
+.normalizeFdaValue <- function(x) {
+    if (is.null(x)) {
+        return(NA_character_)
+    }
+    gsub("[, /-]+", "_", gsub("[()]", "", tolower(x)))
 }
 
 #' Get Drugs
 #'
-#' Perform a record look up in DGIdb for a drug of interest
+#' Performs a record lookup in DGIdb for drugs of interest.
 #'
-#' @param terms
-#' drugs for record lookup
-#' @param immunotherapy
-#' filter option for results that are only immunotherapy, Default: NULL
-#' @param antineoplastic
-#' filter option for results that see antineoplastic use, Default: NULL
-#' @param api_url
-#' API endpoint for GraphQL request, Default: NULL
-#' @return
-#' drug data
+#' @param terms Character vector of drug names.
+#' @param immunotherapy Optionally retain only immunotherapies.
+#' @param antineoplastic Optionally retain drugs by antineoplastic use.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_drugs(c("Imatinib"))
+#' @return A named list of drug fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getDrugs("Imatinib")
 #' @export
-get_drugs <- function(
-    terms,
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    api_url = NULL) {
-  params <- list(names = terms)
-  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
-  if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
-  results <- post_query(api_url, "queries/get_drugs.graphql", params)
+getDrugs <- function(
+        terms,
+        immunotherapy = NULL,
+        antineoplastic = NULL,
+        apiUrl = NULL
+) {
+    params <- list(names = terms)
+    if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+    if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
+    results <- .postQuery(apiUrl, "queries/get_drugs.graphql", params)
 
-  nodes <- results$drugs$nodes
-  output <- list(
-    drug_name = vapply(nodes, function(x) x$name, character(1)),
-    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
-    drug_aliases = lapply(nodes, function(x) vapply(x$drugAliases, function(a) a$alias, character(1))),
-    drug_attributes = lapply(nodes, function(x) group_attributes(x$drugAttributes)),
-    drug_is_antineoplastic = vapply(nodes, function(x) x$antiNeoplastic, logical(1)),
-    drug_is_immunotherapy = vapply(nodes, function(x) x$immunotherapy, logical(1)),
-    drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
-    drug_approval_ratings = lapply(nodes, function(x) {
-      lapply(x$drugApprovalRatings, function(r) list(rating = r$rating, source = r$source$sourceDbName))
-    }),
-    drug_fda_applications = lapply(nodes, function(x) vapply(x$drugApplications, function(a) a$appNo, character(1)))
-  )
-  output$drug_attributes <- backfill_dicts(output$drug_attributes)
-  output
+    nodes <- results$drugs$nodes
+    output <- list(
+        drug_name = vapply(nodes, function(x) x$name, character(1)),
+        drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
+        drug_aliases = lapply(nodes, function(x) {
+            vapply(x$drugAliases, function(a) a$alias, character(1))
+        }),
+        drug_attributes = lapply(nodes, function(x) {
+            .groupAttributes(x$drugAttributes)
+        }),
+        drug_is_antineoplastic = vapply(
+            nodes, function(x) x$antiNeoplastic, logical(1)
+        ),
+        drug_is_immunotherapy = vapply(
+            nodes, function(x) x$immunotherapy, logical(1)
+        ),
+        drug_is_approved = vapply(nodes, function(x) x$approved, logical(1)),
+        drug_approval_ratings = lapply(nodes, function(x) {
+            lapply(x$drugApprovalRatings, function(r) {
+                list(rating = r$rating, source = r$source$sourceDbName)
+            })
+        }),
+        drug_fda_applications = lapply(nodes, function(x) {
+            vapply(x$drugApplications, function(a) a$appNo, character(1))
+        })
+    )
+    output$drug_attributes <- .backfillAttributes(output$drug_attributes)
+    output
 }
 
 #' Get Genes
 #'
-#' Perform a record look up in DGIdb for genes of interest
+#' Performs a record lookup in DGIdb for genes of interest.
 #'
-#' @param terms genes for record lookup
-#' @param api_url API endpoint for GraphQL request, Default: NULL
-#' @return gene data
+#' @param terms Character vector of gene names.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_genes(c("BRAF", "PDGFRA"))
+#' @return A named list of gene fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getGenes(c("BRAF", "PDGFRA"))
 #' @export
-get_genes <- function(terms, api_url = NULL) {
-  params <- list(names = terms)
-  results <- post_query(api_url, "queries/get_genes.graphql", params)
+getGenes <- function(terms, apiUrl = NULL) {
+    params <- list(names = terms)
+    results <- .postQuery(apiUrl, "queries/get_genes.graphql", params)
 
-  nodes <- results$genes$nodes
-  output <- list(
-    gene_name = vapply(nodes, function(x) x$name, character(1)),
-    gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
-    gene_aliases = lapply(nodes, function(x) vapply(x$geneAliases, function(a) a$alias, character(1))),
-    gene_attributes = lapply(nodes, function(x) group_attributes(x$geneAttributes))
-  )
-  output$gene_attributes <- backfill_dicts(output$gene_attributes)
-  output
+    nodes <- results$genes$nodes
+    output <- list(
+        gene_name = vapply(nodes, function(x) x$name, character(1)),
+        gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1)),
+        gene_aliases = lapply(nodes, function(x) {
+            vapply(x$geneAliases, function(a) a$alias, character(1))
+        }),
+        gene_attributes = lapply(nodes, function(x) {
+            .groupAttributes(x$geneAttributes)
+        })
+    )
+    output$gene_attributes <- .backfillAttributes(output$gene_attributes)
+    output
+}
+
+.interactionOutput <- function(results) {
+    nodes <- unlist(
+        lapply(results, function(x) x$interactions),
+        recursive = FALSE
+    )
+    output <- list(
+        gene_name = vapply(nodes, function(x) x$gene$name, character(1)),
+        gene_concept_id = vapply(
+            nodes, function(x) x$gene$conceptId, character(1)
+        ),
+        gene_long_name = vapply(
+            nodes, function(x) x$gene$longName, character(1)
+        ),
+        drug_name = vapply(nodes, function(x) x$drug$name, character(1)),
+        drug_concept_id = vapply(
+            nodes, function(x) x$drug$conceptId, character(1)
+        ),
+        drug_approved = vapply(nodes, function(x) x$drug$approved, logical(1)),
+        interaction_score = vapply(
+            nodes, function(x) x$interactionScore, numeric(1)
+        ),
+        interaction_attributes = lapply(nodes, function(x) {
+            .groupAttributes(x$interactionAttributes)
+        }),
+        interaction_pmids = lapply(nodes, function(x) {
+            unlist(lapply(x$interactionClaims, function(y) {
+                vapply(y$publications, function(z) z$pmid, numeric(1))
+            }))
+        }),
+        interaction_sources = lapply(nodes, function(x) {
+            vapply(
+                x$interactionClaims,
+                function(y) y$source$sourceDbName,
+                character(1)
+            )
+        })
+    )
+    output$interaction_attributes <- .backfillAttributes(
+        output$interaction_attributes
+    )
+    output
 }
 
 #' Get Interactions
 #'
-#' Perform an interaction look up for drugs or genes of interest
+#' Performs an interaction lookup for drugs or genes of interest.
 #'
-#' @param terms
-#' drugs or genes for interaction look up
-#' @param search
-#' interaction search type. valid types are "drugs" or "genes", Default: 'genes'
-#' @param immunotherapy
-#' filter option for results that are used in immunotherapy, Default: NULL
-#' @param antineoplastic
-#' filter option for results that are part of antineoplastic regimens,
-#' Default: NULL
-#' @param source
-#' filter option for specific database of interest, Default: NULL
-#' @param pmid
-#' filter option for specific PMID, Default: NULL
-#' @param interaction_type
-#' filter option for specific interaction types, Default: NULL
-#' @param approved
-#' filter option for approved interactions, Default: NULL
-#' @param api_url
-#' API endpoint for GraphQL request, Default: NULL
-#' @return
-#' interaction results for terms
+#' @param terms Character vector of drug or gene names.
+#' @param search Either `"genes"` or `"drugs"`.
+#' @param immunotherapy Optionally filter drug searches by immunotherapy use.
+#' @param antineoplastic Optionally filter drug searches by antineoplastic use.
+#' @param source Optionally filter by source database name.
+#' @param pmid Optionally filter by PubMed identifier.
+#' @param interactionType Optionally filter by interaction type.
+#' @param approved Optionally filter drug searches by approval status.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_interactions(c("BRAF", "PDGFRA"))
+#' @return A named list of interaction fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getInteractions(c("BRAF", "PDGFRA"))
+#' @usage
+#' getInteractions(
+#'     terms,
+#'     search = "genes",
+#'     immunotherapy = NULL,
+#'     antineoplastic = NULL,
+#'     source = NULL,
+#'     pmid = NULL,
+#'     interactionType = NULL,
+#'     approved = NULL,
+#'     apiUrl = NULL
+#' )
 #' @export
-get_interactions <- function(
-    terms,
-    search = "genes",
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    source = NULL,
-    pmid = NULL,
-    interaction_type = NULL,
-    approved = NULL,
-    api_url = NULL) {
-  params <- list(names = terms)
-  if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
-  if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
-  if (!is.null(source)) params$sourceDbName <- source
-  if (!is.null(pmid)) params$pmid <- pmid
-  if (!is.null(interaction_type)) params$interactionType <- interaction_type
-  if (!is.null(approved)) params$approved <- approved
-
-  if (search == "genes") {
-    results <- post_query(
-      api_url,
-      "queries/get_interactions_by_gene.graphql",
-      params
-    )$genes$nodes
-  } else if (search == "drugs") {
-    results <- post_query(
-      api_url,
-      "queries/get_interactions_by_drug.graphql",
-      params
-    )$drugs$nodes
-  } else {
-    msg <- "Search type must be specified using: search='drugs' or search='genes'"
-    stop(msg)
-  }
-
-  nodes <- unlist(lapply(results, function(x) x$interactions), recursive = FALSE)
-  output <- list(
-    gene_name = vapply(nodes, function(x) x$gene$name, character(1)),
-    gene_concept_id = vapply(nodes, function(x) x$gene$conceptId, character(1)),
-    gene_long_name = vapply(nodes, function(x) x$gene$longName, character(1)),
-    drug_name = vapply(nodes, function(x) x$drug$name, character(1)),
-    drug_concept_id = vapply(nodes, function(x) x$drug$conceptId, character(1)),
-    drug_approved = vapply(nodes, function(x) x$drug$approved, logical(1)),
-    interaction_score = vapply(nodes, function(x) x$interactionScore, numeric(1)),
-    interaction_attributes = lapply(nodes, function(x) group_attributes(x$interactionAttributes)),
-    interaction_pmids = lapply(nodes, function(x) {
-      unlist(lapply(x$interactionClaims, function(y) {
-        vapply(y$publications, function(z) z$pmid, numeric(1))
-      }))
-    }),
-    interaction_sources = lapply(nodes, function(x) {
-      vapply(x$interactionClaims, function(y) y$source$sourceDbName, character(1))
-    })
-  )
-  output$interaction_attributes <- backfill_dicts(output$interaction_attributes)
-  output
+getInteractions <- function(
+        terms,
+        search = "genes",
+        immunotherapy = NULL,
+        antineoplastic = NULL,
+        source = NULL,
+        pmid = NULL,
+        interactionType = NULL,
+        approved = NULL,
+        apiUrl = NULL
+) {
+    search <- match.arg(search, c("genes", "drugs"))
+    params <- list(names = terms)
+    if (!is.null(source)) params$sourceDbName <- source
+    if (!is.null(pmid)) params$pmid <- pmid
+    if (!is.null(interactionType)) params$interactionType <- interactionType
+    if (search == "drugs") {
+        if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
+        if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
+        if (!is.null(approved)) params$approved <- approved
+    }
+    queryFile <- if (search == "genes") {
+        "queries/get_interactions_by_gene.graphql"
+    } else {
+        "queries/get_interactions_by_drug.graphql"
+    }
+    results <- .postQuery(apiUrl, queryFile, params)[[search]]$nodes
+    .interactionOutput(results)
 }
 
-#' Get Categories
+#' Get Gene Categories
 #'
-#' Perform a category annotation lookup for genes of interest
+#' Performs a category annotation lookup for genes of interest.
 #'
-#' @param terms Genes of interest for annotations
-#' @param api_url API endpoint for GraphQL request, Default: NULL
-#' @return category annotation results for genes
+#' @param terms Character vector of gene names.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_categories(c("BRAF", "PDGFRA"))
+#' @return A named list of gene-category fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getCategories(c("BRAF", "PDGFRA"))
 #' @export
-get_categories <- function(terms, api_url = NULL) {
-  params <- list(names = terms)
-  results <- post_query(api_url, "queries/get_gene_categories.graphql", params)
+getCategories <- function(terms, apiUrl = NULL) {
+    params <- list(names = terms)
+    results <- .postQuery(apiUrl, "queries/get_gene_categories.graphql", params)
 
-  nodes <- results$genes$nodes
-  output <- list(
-    gene_name = unlist(lapply(nodes, function(x) {
-      rep(x$name, length(x$geneCategoriesWithSources))
-    })),
-    gene_concept_id = unlist(lapply(nodes, function(x) {
-      rep(x$conceptId, length(x$geneCategoriesWithSources))
-    })),
-    gene_full_name = unlist(lapply(nodes, function(x) {
-      rep(x$longName, length(x$geneCategoriesWithSources))
-    })),
-    gene_category = unlist(lapply(nodes, function(x) {
-      vapply(x$geneCategoriesWithSources, function(y) y$name, character(1))
-    })),
-    gene_category_sources = unlist(lapply(nodes, function(x) {
-      lapply(x$geneCategoriesWithSources, function(y) y$sourceNames)
-    }), recursive = FALSE)
-  )
-  output
+    nodes <- results$genes$nodes
+    output <- list(
+        gene_name = unlist(lapply(nodes, function(x) {
+            rep(x$name, length(x$geneCategoriesWithSources))
+        })),
+        gene_concept_id = unlist(lapply(nodes, function(x) {
+            rep(x$conceptId, length(x$geneCategoriesWithSources))
+        })),
+        gene_full_name = unlist(lapply(nodes, function(x) {
+            rep(x$longName, length(x$geneCategoriesWithSources))
+        })),
+        gene_category = unlist(lapply(nodes, function(x) {
+            vapply(
+                x$geneCategoriesWithSources,
+                function(y) y$name,
+                character(1)
+            )
+        })),
+        gene_category_sources = unlist(lapply(nodes, function(x) {
+            lapply(x$geneCategoriesWithSources, function(y) y$sourceNames)
+        }), recursive = FALSE)
+    )
+    output
 }
 
-source_type <- list(
-  DRUG = "drug",
-  GENE = "gene",
-  INTERACTION = "interaction",
-  POTENTIALLY_DRUGGABLE = "potentially_druggable"
+#' DGIdb Source Types
+#'
+#' Supported values for the `sourceType` argument to `getSources()`.
+#'
+#' @format A named list of four character values.
+#'
+#' @return A named list of supported DGIdb source-type character values
+#'
+#' @examples
+#' sourceTypes
+#' sourceTypes$GENE
+#'
+#' @export
+sourceTypes <- list(
+    DRUG = "drug",
+    GENE = "gene",
+    INTERACTION = "interaction",
+    POTENTIALLY_DRUGGABLE = "potentially_druggable"
 )
 
 #' Get Sources
 #'
-#' Perform a source lookup for relevant aggregate sources
+#' Performs a lookup for DGIdb aggregate sources.
 #'
-#' @param source_type
-#' type of source to look up. Fetches all sources otherwise, Default: NULL
-#' @param api_url
-#' API endpoint for GraphQL request, Default: NULL
-#' @return
-#' all sources of relevant type in a json object
+#' @param sourceType Optional source type from `sourceTypes`.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' source_type <- list(
-#'   DRUG = "drug",
-#'   GENE = "gene",
-#'   INTERACTION = "interaction",
-#'   POTENTIALLY_DRUGGABLE = "potentially_druggable"
-#' )
-#' sources <- get_sources(source_type$POTENTIALLY_DRUGGABLE)
+#' @return A named list of source fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getSources(sourceTypes$POTENTIALLY_DRUGGABLE)
 #' @export
-get_sources <- function(source_type = NULL, api_url = NULL) {
-  params <- if (!is.null(source_type)) list(sourceType = toupper(source_type)) else NULL
-  results <- post_query(api_url, "queries/get_sources.graphql", params)
+getSources <- function(sourceType = NULL, apiUrl = NULL) {
+    params <- if (!is.null(sourceType)) {
+        list(sourceType = toupper(sourceType))
+    } else {
+        NULL
+    }
+    results <- .postQuery(apiUrl, "queries/get_sources.graphql", params)
 
-  nodes <- results$sources$nodes
-  output <- list(
-    source_name = vapply(nodes, function(x) x$fullName, character(1)),
-    source_short_name = vapply(nodes, function(x) x$sourceDbName, character(1)),
-    source_version = vapply(nodes, function(x) x$sourceDbVersion, character(1)),
-    source_drug_claims = vapply(nodes, function(x) x$drugClaimsCount, numeric(1)),
-    source_gene_claims = vapply(nodes, function(x) x$geneClaimsCount, numeric(1)),
-    source_interaction_claims = vapply(nodes, function(x) x$interactionClaimsCount, numeric(1)),
-    source_license = vapply(nodes, function(x) x$license, character(1)),
-    source_license_url = vapply(nodes, function(x) x$licenseLink, character(1))
-  )
-  output
+    nodes <- results$sources$nodes
+    output <- list(
+        source_name = vapply(nodes, function(x) x$fullName, character(1)),
+        source_short_name = vapply(
+            nodes, function(x) x$sourceDbName, character(1)
+        ),
+        source_version = vapply(
+            nodes, function(x) x$sourceDbVersion, character(1)
+        ),
+        source_drug_claims = vapply(
+            nodes, function(x) x$drugClaimsCount, numeric(1)
+        ),
+        source_gene_claims = vapply(
+            nodes, function(x) x$geneClaimsCount, numeric(1)
+        ),
+        source_interaction_claims = vapply(
+            nodes, function(x) x$interactionClaimsCount, numeric(1)
+        ),
+        source_license = vapply(nodes, function(x) x$license, character(1)),
+        source_license_url = vapply(
+            nodes, function(x) x$licenseLink, character(1)
+        )
+    )
+    output
 }
 
 #' Get All Genes
 #'
-#' Get all gene names present in DGIdb
+#' Gets all gene names and identifiers present in DGIdb.
 #'
-#' @param api_url API endpoint for GraphQL request, Default: NULL
-#' @return a full list of genes present in dgidb
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_all_genes()
+#' @return A named list containing gene names and concept identifiers.
+#'
+#' @examplesIf interactive()
+#' getAllGenes()
 #' @export
-get_all_genes <- function(api_url = NULL) {
-  results <- post_query(api_url, "queries/get_all_genes.graphql", NULL)
+getAllGenes <- function(apiUrl = NULL) {
+    results <- .postQuery(apiUrl, "queries/get_all_genes.graphql", NULL)
 
-  nodes <- results$genes$nodes
-  output <- list(
-    gene_name = vapply(nodes, function(x) x$name, character(1)),
-    gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
-  )
-  output
+    nodes <- results$genes$nodes
+    output <- list(
+        gene_name = vapply(nodes, function(x) x$name, character(1)),
+        gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
+    )
+    output
 }
 
 #' Get All Drugs
 #'
-#' Get all drug names present in DGIdb
+#' Gets all drug names and identifiers present in DGIdb.
 #'
-#' @param api_url API endpoint for GraphQL request, Default: NULL
-#' @return a full list of drugs present in dgidb
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
-#' @examples
-#' get_all_drugs()
+#' @return A named list containing drug names and concept identifiers.
+#'
+#' @examplesIf interactive()
+#' getAllDrugs()
 #' @export
-get_all_drugs <- function(api_url = NULL) {
-  results <- post_query(api_url, "queries/get_all_drugs.graphql", NULL)
+getAllDrugs <- function(apiUrl = NULL) {
+    results <- .postQuery(apiUrl, "queries/get_all_drugs.graphql", NULL)
 
-  nodes <- results$drugs$nodes
-  output <- list(
-    drug_name = vapply(nodes, function(x) x$name, character(1)),
-    drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
-  )
-  output
+    nodes <- results$drugs$nodes
+    output <- list(
+        drug_name = vapply(nodes, function(x) x$name, character(1)),
+        drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
+    )
+    output
+}
+
+.fdaProductRow <- function(drug, application, product) {
+    strength <- product$active_ingredients[[1]]$strength
+    if (is.null(strength)) strength <- NA_character_
+    list(
+        drug_name = drug$name,
+        drug_concept_id = drug$conceptId,
+        drug_product_application = application,
+        drug_brand_name = product$brand_name,
+        drug_marketing_status = .normalizeFdaValue(product$marketing_status),
+        drug_dosage_form = .normalizeFdaValue(product$dosage_form),
+        drug_dosage_strength = strength
+    )
+}
+
+.fdaApplicationRows <- function(drug, app) {
+    id <- sub(".*:", "", app$appNo)
+    prefix <- if (grepl("anda", app$appNo, ignore.case = TRUE)) {
+        "ANDA"
+    } else {
+        "NDA"
+    }
+    application <- paste0(prefix, id)
+    products <- tryCatch(
+        .getFdaProducts(application),
+        error = function(e) {
+            warning(
+                sprintf(
+                    "Drugs@FDA lookup failed for %s: %s",
+                    application, conditionMessage(e)
+                ),
+                call. = FALSE
+            )
+            NULL
+        }
+    )
+    if (is.null(products)) {
+        return(list())
+    }
+    if (!length(products)) {
+        warning(
+            sprintf("No Drugs@FDA results for %s", application),
+            call. = FALSE
+        )
+        return(list())
+    }
+    lapply(products, function(product) {
+        .fdaProductRow(drug, application, product)
+    })
+}
+
+#' Get Drug Applications
+#'
+#' Gets Drugs@FDA product information for DGIdb drug application records.
+#'
+#' @param terms Character vector of drug names.
+#' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
+#'
+#' @return A named list of Drugs@FDA product fields aligned by position.
+#'
+#' @examplesIf interactive()
+#' getDrugApplications("Imatinib")
+#' @export
+getDrugApplications <- function(terms, apiUrl = NULL) {
+    fields <- c(
+        "drug_name", "drug_concept_id", "drug_product_application",
+        "drug_brand_name", "drug_marketing_status", "drug_dosage_form",
+        "drug_dosage_strength"
+    )
+    results <- .postQuery(
+        apiUrl,
+        "queries/get_drug_applications.graphql",
+        list(names = terms)
+    )
+
+    rows <- unlist(lapply(results$drugs$nodes, function(drug) {
+        unlist(lapply(drug$drugApplications, function(app) {
+            .fdaApplicationRows(drug, app)
+        }), recursive = FALSE)
+    }), recursive = FALSE)
+
+    stats::setNames(
+        lapply(fields, function(field) vapply(rows, `[[`, character(1), field)),
+        fields
+    )
 }

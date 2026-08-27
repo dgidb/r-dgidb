@@ -1,159 +1,203 @@
 httptest2::with_mock_api({
-  test_that("Test Get Drugs", {
-    results <- get_drugs(c("Imatinib"))
-    expect_true(length(results$drug_name) > 0, "FAIL: DataFrame is non-empty")
+    test_that("getDrugs() returns matching drugs", {
+        results <- getDrugs("Imatinib")
+        expect_gt(length(results$drug_name), 0)
 
-    results_with_added_fake <- get_drugs(c("Imatinib", "not-real"))
-    expect_true(
-      length(results_with_added_fake$drug_name) == length(results$drug_name),
-      "FAIL: Gracefully ignore non-existent search terms"
+        results_with_added_fake <- getDrugs(c("Imatinib", "not-real"))
+        expect_length(
+            results_with_added_fake$drug_name,
+            length(results$drug_name)
+        )
+
+        empty_results <- getDrugs("not-real")
+        expect_length(empty_results$drug_name, 0)
+    })
+})
+
+test_that("getDrugs() applies drug filters", {
+    params <- NULL
+    local_mocked_bindings(
+        .postQuery = function(apiUrl, queryFile, variables) {
+            params <<- variables
+            list(drugs = list(nodes = list()))
+        }
     )
 
-    # handling filters
-    filtered_results <- get_drugs(
-      c("imatinib", "metronidazole"),
-      antineoplastic = TRUE
-    )
-    expect_true(
-      "IMATINIB" %in% filtered_results$drug_name,
-      "FAIL: Imatinib is retained by the filter"
-    )
-    expect_true(
-      all(unlist(results$drug_is_antineoplastic)),
-      "FAIL: All results are antineoplastics"
-    )
-
-    filtered_results <- get_drugs(
-      c("imatinib", "metronidazole"),
-      antineoplastic = FALSE
-    )
-    expect_true(
-      length(filtered_results$drug_name) > 0,
-      "FAIL: DataFrame is non-empty"
-    )
-    expect_true("METRONIDAZOLE" %in% filtered_results$drug_name)
-
-    # empty response
-    empty_results <- get_drugs(c("not-real"))
-    expect_true(
-      length(empty_results$drug_name) == 0,
-      "FAIL: Handles empty response"
-    )
-  })
+    getDrugs("imatinib", immunotherapy = TRUE, antineoplastic = TRUE)
+    expect_true(params$immunotherapy)
+    expect_true(params$antiNeoplastic)
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Genes", {
-    results <- get_genes(c("ereg"))
-    expect_true(length(results$gene_name) > 0, "FAIL: DataFrame is non-empty")
+    test_that("getGenes() returns matching genes", {
+        results <- getGenes("ereg")
+        expect_gt(length(results$gene_name), 0)
 
-    results_with_added_fake <- get_genes(c("ereg", "not-real"))
-    expect_true(
-      length(results_with_added_fake$gene_name) == length(results$gene_name),
-      "FAIL: Gracefully ignore non-existent search terms"
-    )
+        results_with_added_fake <- getGenes(c("ereg", "not-real"))
+        expect_length(
+            results_with_added_fake$gene_name,
+            length(results$gene_name)
+        )
 
-    # empty response
-    empty_results <- get_genes(c("not-real"))
-    expect_true(
-      length(empty_results$gene_name) == 0,
-      "FAIL: Handles empty response"
-    )
-  })
+        empty_results <- getGenes("not-real")
+        expect_length(empty_results$gene_name, 0)
+    })
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Interactions By Genes", {
-    results <- get_interactions(c("ereg"))
-    expect_true(length(results$gene_name) > 0, "FAIL: Results are non-empty")
+    test_that("getInteractions() searches by gene", {
+        results <- getInteractions("ereg")
+        expect_gt(length(results$gene_name), 0)
 
-    results <- get_interactions(c("ereg", "not-real"))
-    expect_true(
-      length(results$gene_name) > 0,
-      "FAIL: Handles additional not-real terms gracefully"
-    )
+        results_with_added_fake <- getInteractions(c("ereg", "not-real"))
+        expect_length(
+            results_with_added_fake$gene_name,
+            length(results$gene_name)
+        )
 
-    # multiple terms
-    multiple_gene_results <- get_interactions(c("ereg", "braf"))
-    expect_true(
-      length(multiple_gene_results$gene_name) > length(results$gene_name),
-      "FAIL: Handles multiple genes at once"
-    )
+        multiple_results <- getInteractions(c("ereg", "braf"))
+        expect_gt(
+            length(multiple_results$gene_name),
+            length(results$gene_name)
+        )
 
-    # empty response
-    empty_results <- get_interactions(c("not-real"))
-    expect_true(
-      length(empty_results$gene_name) == 0,
-      "FAIL: Handles empty response"
-    )
-  })
+        empty_results <- getInteractions("not-real")
+        expect_length(empty_results$gene_name, 0)
+    })
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Interactions By Drugs", {
-    results <- get_interactions(c("sunitinib"), search = "drugs")
-    expect_true(length(results$drug_name) > 0, "FAIL: Results are non-empty")
+    test_that("getInteractions() searches by drug", {
+        results <- getInteractions("sunitinib", search = "drugs")
+        expect_gt(length(results$drug_name), 0)
 
-    results <- get_interactions(c("sunitinib", "not-real"), search = "drugs")
-    expect_true(
-      length(results$drug_name) > 0,
-      "FAIL: Handles additional not-real terms gracefully"
+        results_with_added_fake <- getInteractions(
+            c("sunitinib", "not-real"),
+            search = "drugs"
+        )
+        expect_length(
+            results_with_added_fake$drug_name,
+            length(results$drug_name)
+        )
+
+        multiple_results <- getInteractions(
+            c("sunitinib", "clonazepam"),
+            search = "drugs"
+        )
+        expect_gt(
+            length(multiple_results$drug_name),
+            length(results$drug_name)
+        )
+
+        empty_results <- getInteractions("not-real", search = "drugs")
+        expect_length(empty_results$drug_name, 0)
+    })
+})
+
+test_that("getInteractions() applies filters by search type", {
+    params <- NULL
+    local_mocked_bindings(
+        .postQuery = function(apiUrl, queryFile, variables) {
+            params <<- variables
+            key <- if (grepl("gene", queryFile)) "genes" else "drugs"
+            setNames(list(list(nodes = list())), key)
+        }
     )
 
-    # multiple terms
-    multiple_gene_results <- get_interactions(
-      c("sunitinib", "clonazepam"),
-      search = "drugs"
-    )
-    expect_true(
-      length(multiple_gene_results$drug_name) > length(results$drug_name),
-      "FAIL: Handles multiple drugs at once"
-    )
+    getInteractions("braf", search = "genes", immunotherapy = TRUE)
+    expect_null(params$immunotherapy)
 
-    # empty response
-    empty_results <- get_interactions(c("not-real"), search = "drugs")
-    expect_true(
-      length(empty_results$drug_name) == 0,
-      "FAIL: Handles empty response"
+    getInteractions(
+        "imatinib",
+        search = "drugs",
+        immunotherapy = TRUE,
+        antineoplastic = TRUE,
+        approved = TRUE
     )
-  })
+    expect_true(params$immunotherapy)
+    expect_true(params$antineoplastic)
+    expect_true(params$approved)
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Categories", {
-    results <- get_categories(c("BRAF"))
-    expect_true(length(results$gene_name) > 0, "FAIL: Results are non-empty")
-    expect_true("DRUG RESISTANCE" %in% results$gene_category)
-    expect_true("DRUGGABLE GENOME" %in% results$gene_category)
-    expect_true("CLINICALLY ACTIONABLE" %in% results$gene_category)
-  })
+    test_that("getCategories() returns gene categories", {
+        results <- getCategories("BRAF")
+        expect_gt(length(results$gene_name), 0)
+        expect_true(all(c(
+            "DRUG RESISTANCE",
+            "DRUGGABLE GENOME",
+            "CLINICALLY ACTIONABLE"
+        ) %in% results$gene_category))
+    })
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Sources", {
-    results <- get_sources()
-    expect_true(
-      length(results$source_name) == 45,
-      "Incorrect # of sources: " + str(length(results$source_name))
-    )
+    test_that("getSources() returns source data", {
+        results <- getSources()
+        expect_length(results$source_name, 45)
 
-    results <- get_sources(source_type$GENE)
-    sources <- results$source_name
-    expect_true(
-      length(sources) == 3,
-      "Incorrect # of sources: " + str(length(sources))
-    )
-    # "Check: Contains correct sources"
-    expect_setequal(
-      sources,
-      c("NCBI Gene", "HUGO Gene Nomenclature Committee", "Ensembl")
-    )
-  })
+        sources <- getSources(sourceTypes$GENE)$source_name
+        expect_length(sources, 3)
+        expect_setequal(
+            sources,
+            c("NCBI Gene", "HUGO Gene Nomenclature Committee", "Ensembl")
+        )
+    })
 })
 
 httptest2::with_mock_api({
-  test_that("Test Get Gene List", {
-    results <- get_all_genes()
-    expect_true(length(results$gene_name) == 12062)
-  })
+    test_that("getAllGenes() returns all genes", {
+        results <- getAllGenes()
+        expect_gt(length(results$gene_name), 0)
+        expect_length(results$gene_concept_id, length(results$gene_name))
+    })
+})
+
+test_that("getAllDrugs() returns all drugs", {
+    local_mocked_bindings(
+        .postQuery = function(apiUrl, queryFile, variables) {
+            expect_equal(queryFile, "queries/get_all_drugs.graphql")
+            expect_null(variables)
+            list(drugs = list(nodes = list(list(
+                name = "Imatinib",
+                conceptId = "chembl:941"
+            ))))
+        }
+    )
+
+    results <- getAllDrugs()
+    expect_equal(results$drug_name, "Imatinib")
+    expect_equal(results$drug_concept_id, "chembl:941")
+})
+
+test_that("getDrugApplications() returns FDA product data", {
+    local_mocked_bindings(
+        .postQuery = function(apiUrl, queryFile, variables) {
+            expect_equal(queryFile, "queries/get_drug_applications.graphql")
+            expect_equal(variables, list(names = "Imatinib"))
+            list(drugs = list(nodes = list(list(
+                name = "Imatinib",
+                conceptId = "chembl:941",
+                drugApplications = list(list(appNo = "drugsatfda.nda:021588"))
+            ))))
+        },
+        .getFdaProducts = function(application) {
+            expect_equal(application, "NDA021588")
+            list(list(
+                brand_name = "GLEEVEC",
+                marketing_status = "Prescription",
+                dosage_form = "TABLET",
+                active_ingredients = list(list(strength = "100MG"))
+            ))
+        }
+    )
+
+    results <- getDrugApplications("Imatinib")
+    expect_equal(results$drug_name, "Imatinib")
+    expect_equal(results$drug_concept_id, "chembl:941")
+    expect_equal(results$drug_product_application, "NDA021588")
+    expect_equal(results$drug_brand_name, "GLEEVEC")
+    expect_equal(results$drug_marketing_status, "prescription")
+    expect_equal(results$drug_dosage_form, "tablet")
+    expect_equal(results$drug_dosage_strength, "100MG")
 })

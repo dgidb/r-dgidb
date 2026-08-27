@@ -1,0 +1,223 @@
+---
+title: "rDGIdb: R Interface to the 'DGIdb' GraphQL API"
+author:
+  - name: Rohit Basu
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('rDGIdb')`"
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{rDGIdb: R Interface to the 'DGIdb' GraphQL API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    warning = FALSE,
+    message = FALSE
+)
+
+online <- interactive()
+```
+
+# Introduction
+
+The Drug-Gene Interaction Database (DGIdb) provides information about drugs,
+genes, drug-gene interactions, and other therapeutically relevant information.
+`rDGIdb` provides an R interface to the public DGIdb GraphQL API so that these
+data can be queried directly from R and incorporated into Bioconductor
+workflows.
+
+The package provides a set of query functions that can pull information from
+DGIdb.
+Results are returned as named lists in a column-oriented format: each element
+represents a field, and values at the same position describe the same record.
+
+Project source and issue tracking are available at
+<https://github.com/dgidb/r-dgidb>. The DGIdb web application is available at
+<https://dgidb.org/>.
+
+# Getting started
+
+Load `rDGIdb` with:
+
+```{r load-package}
+library(rDGIdb)
+```
+
+The main functions are:
+
+| Function | Purpose |
+| --- | --- |
+| `getGenes()` | Look up gene records |
+| `getDrugs()` | Look up drug records |
+| `getInteractions()` | Find drug-gene interactions by gene or drug |
+| `getCategories()` | Retrieve DGIdb gene-category annotations |
+| `getSources()` | Inspect DGIdb aggregate data sources |
+| `getDrugApplications()` | Retrieve Drugs\@FDA product information |
+| `getAllGenes()` | Retrieve all DGIdb gene names and concept identifiers |
+| `getAllDrugs()` | Retrieve all DGIdb drug names and concept identifiers |
+
+# Looking up genes
+
+Use `getGenes()` to retrieve DGIdb records for one or more genes. For example,
+the following query retrieves records for `BRAF` and `PDGFRA`:
+
+```{r gene-lookup, eval = online}
+genes <- getGenes(c("BRAF", "PDGFRA"))
+
+gene_table <- data.frame(
+    gene_name = genes$gene_name,
+    gene_concept_id = genes$gene_concept_id
+)
+
+gene_table
+```
+
+Some fields contain multiple values per record. Gene aliases, for example, are
+returned as a list column:
+
+```{r gene-aliases, eval = online}
+head(genes$gene_aliases[[1]])
+```
+
+# Looking up drug-gene interactions
+
+A common use of `rDGIdb` is to start with genes of interest and retrieve known
+or reported drug-gene interactions. By default, `getInteractions()` interprets
+its input as gene names:
+
+```{r gene-interactions, eval = online}
+interactions <- getInteractions(c("BRAF", "PDGFRA"))
+
+interaction_table <- data.frame(
+    gene_name = interactions$gene_name,
+    drug_name = interactions$drug_name,
+    drug_approved = interactions$drug_approved,
+    interaction_score = interactions$interaction_score
+)
+
+head(interaction_table)
+```
+
+Interactions can also be queried starting from drug names by setting
+`search = "drugs"`:
+
+```{r drug-interactions, eval = online}
+imatinib_interactions <- getInteractions(
+    "Imatinib",
+    search = "drugs",
+    approved = TRUE
+)
+
+head(data.frame(
+    gene_name = imatinib_interactions$gene_name,
+    drug_name = imatinib_interactions$drug_name,
+    interaction_score = imatinib_interactions$interaction_score
+))
+```
+
+Additional filters are available for source database, PubMed identifier,
+interaction type, approval status, immunotherapy status, and antineoplastic
+use. Refer to `?getInteractions` for the complete set of arguments.
+
+# Looking up drugs
+
+Use `getDrugs()` to retrieve drug records. The returned fields include DGIdb
+concept identifiers, aliases, attributes, approval information, and associated
+Drugs\@FDA application identifiers.
+
+```{r drug-lookup, eval = online}
+drugs <- getDrugs("Imatinib")
+
+data.frame(
+    drug_name = drugs$drug_name,
+    drug_concept_id = drugs$drug_concept_id,
+    approved = drugs$drug_is_approved,
+    antineoplastic = drugs$drug_is_antineoplastic,
+    immunotherapy = drugs$drug_is_immunotherapy
+)
+```
+
+Drug searches can also be restricted by antineoplastic or immunotherapy status:
+
+```{r drug-filter, eval = online}
+getDrugs("Imatinib", antineoplastic = TRUE)
+```
+
+# Gene categories
+
+DGIdb annotates genes with categories that can help identify genes of potential
+therapeutic interest. Use `getCategories()` to retrieve these annotations:
+
+```{r categories, eval = online}
+categories <- getCategories("BRAF")
+
+data.frame(
+    gene_name = categories$gene_name,
+    gene_category = categories$gene_category
+)
+```
+
+# DGIdb data sources
+
+DGIdb aggregates information from multiple source databases. `getSources()`
+returns information about these sources, including their names, versions,
+claim counts, and licensing information.
+
+The `sourceTypes` object lists the source categories accepted by
+`getSources()`:
+
+```{r source-types}
+sourceTypes
+```
+
+For example, interaction sources can be queried with:
+
+```{r sources, eval = online}
+sources <- getSources(sourceTypes$INTERACTION)
+
+head(data.frame(
+    source_name = sources$source_name,
+    source_version = sources$source_version,
+    interaction_claims = sources$source_interaction_claims
+))
+```
+
+# Drugs\@FDA application information
+
+`getDrugApplications()` combines DGIdb drug application identifiers with
+product information from the openFDA Drugs\@FDA API.
+
+```{r fda-applications, eval = online}
+applications <- getDrugApplications("Imatinib")
+
+head(data.frame(
+    drug_name = applications$drug_name,
+    application = applications$drug_product_application,
+    brand_name = applications$drug_brand_name,
+    dosage_form = applications$drug_dosage_form,
+    dosage_strength = applications$drug_dosage_strength
+))
+```
+
+# Retrieving complete gene or drug lists
+
+`getAllGenes()` and `getAllDrugs()` retrieve all gene or drug names and concept
+identifiers currently available through DGIdb.
+
+```{r all-records, eval = FALSE}
+all_genes <- getAllGenes()
+all_drugs <- getAllDrugs()
+```
+
+# Session information
+
+```{r session-info}
+sessionInfo()
+```
