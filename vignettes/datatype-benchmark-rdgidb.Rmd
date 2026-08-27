@@ -86,7 +86,8 @@ get_drugs_query <- function(
   terms,
   immunotherapy = NULL,
   antineoplastic = NULL,
-  api_url = NULL) {
+  api_url = NULL
+) {
   params <- list(names = terms)
   if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
   if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
