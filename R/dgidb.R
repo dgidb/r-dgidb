@@ -81,10 +81,11 @@ post_query <- function(api_url, query_file, variables) {
 #' get_drugs(c("Imatinib"))
 #' @export
 get_drugs <- function(
-    terms,
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    api_url = NULL) {
+  terms,
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  api_url = NULL
+) {
   params <- list(names = terms)
   if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
   if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
@@ -164,15 +165,16 @@ get_genes <- function(terms, api_url = NULL) {
 #' get_interactions(c("BRAF", "PDGFRA"))
 #' @export
 get_interactions <- function(
-    terms,
-    search = "genes",
-    immunotherapy = NULL,
-    antineoplastic = NULL,
-    source = NULL,
-    pmid = NULL,
-    interaction_type = NULL,
-    approved = NULL,
-    api_url = NULL) {
+  terms,
+  search = "genes",
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  source = NULL,
+  pmid = NULL,
+  interaction_type = NULL,
+  approved = NULL,
+  api_url = NULL
+) {
   params <- list(names = terms)
   if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
   if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
