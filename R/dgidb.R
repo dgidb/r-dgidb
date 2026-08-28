@@ -92,12 +92,10 @@
 #' @examplesIf interactive()
 #' getDrugs("Imatinib")
 #' @export
-getDrugs <- function(
-        terms,
-        immunotherapy = NULL,
-        antineoplastic = NULL,
-        apiUrl = NULL
-) {
+getDrugs <- function(terms,
+    immunotherapy = NULL,
+    antineoplastic = NULL,
+    apiUrl = NULL) {
     params <- list(names = terms)
     if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
     if (!is.null(antineoplastic)) params$antiNeoplastic <- antineoplastic
@@ -238,17 +236,15 @@ getGenes <- function(terms, apiUrl = NULL) {
 #'     apiUrl = NULL
 #' )
 #' @export
-getInteractions <- function(
-        terms,
-        search = "genes",
-        immunotherapy = NULL,
-        antineoplastic = NULL,
-        source = NULL,
-        pmid = NULL,
-        interactionType = NULL,
-        approved = NULL,
-        apiUrl = NULL
-) {
+getInteractions <- function(terms,
+    search = "genes",
+    immunotherapy = NULL,
+    antineoplastic = NULL,
+    source = NULL,
+    pmid = NULL,
+    interactionType = NULL,
+    approved = NULL,
+    apiUrl = NULL) {
     search <- match.arg(search, c("genes", "drugs"))
     params <- list(names = terms)
     if (!is.null(source)) params$sourceDbName <- source
