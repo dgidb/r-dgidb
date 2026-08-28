@@ -125,24 +125,4 @@ contributing to this project, you agree to abide by its terms.
 
 ## Development
 
-Common development commands are:
-
-``` r
-devtools::load_all()
-devtools::document()
-devtools::test()
-devtools::check()
-```
-
-The package uses [`testthat`](https://testthat.r-lib.org/) for testing
-and [`httptest2`](https://enpiar.com/httptest2/) to mock external HTTP
-requests.
-
-Code can be formatted using the Bioconductor-oriented style supplied by
-[`biocthis`](https://github.com/lcolladotor/biocthis):
-
-``` r
-styler::style_pkg(
-    transformers = biocthis::bioc_style()
-)
-```
+See CONTRIBUTING.md.

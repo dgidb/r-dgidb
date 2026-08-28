@@ -132,7 +132,4 @@ By contributing to this project, you agree to abide by its terms.
 
 ## Development
 
-
-GraphQL queries used to access the DGIdb API are stored in `inst/queries/`.
-During package installation, these files are copied to the package installation
-directory and are located at runtime using `system.file()`.
+See CONTRIBUTING.md.
