@@ -10,12 +10,14 @@ Authors@R: c(
     person(
         "James", "Stevenson",
         email = "james.stevenson@nationwidechildrens.org",
-        role = c("aut")
+        role = c("aut"),
+        comment = c(ORCID = "0000-0002-2568-6163")
     ),
     person(
         "Matthew", "Cannon",
         email = "Matthew.Cannon2@nationwidechildrens.org",
-        role = c("aut", "cre")
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0003-1908-7292")
     )
     )
 Description: Provides an R interface to the 'DGIdb' GraphQL API. The package
