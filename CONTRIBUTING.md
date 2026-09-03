@@ -2,7 +2,7 @@
 
 Common development commands are:
 
-```{r development, eval = FALSE}
+```r
 devtools::load_all()
 devtools::document()
 devtools::test()
@@ -12,12 +12,12 @@ devtools::check()
 The package uses [`testthat`](https://testthat.r-lib.org/) for testing and
 [`httptest2`](https://enpiar.com/httptest2/) to mock external HTTP requests.
 
-Code can be formatted using the Bioconductor-oriented style supplied by
-[`biocthis`](https://github.com/lcolladotor/biocthis):
+Formatting is checked in continuous integration. Before submitting changes,
+format the package with [`styler`](https://styler.r-lib.org/):
 
-```{r style, eval = FALSE}
+```r
 styler::style_pkg(
-    transformers = biocthis::bioc_style()
+    transformers = styler::tidyverse_style(indent_by = 4L)
 )
 ```
 
