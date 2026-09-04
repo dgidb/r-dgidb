@@ -12,7 +12,7 @@ getGenes(terms, apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A named list of gene fields aligned by position.
+A data frame of gene records. Multi-valued fields are list-columns.
 }
 \description{
 Performs a record lookup in DGIdb for genes of interest.

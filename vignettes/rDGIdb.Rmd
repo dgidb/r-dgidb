@@ -35,8 +35,9 @@ workflows.
 
 The package provides a set of query functions that can pull information from
 DGIdb.
-Results are returned as named lists in a column-oriented format: each element
-represents a field, and values at the same position describe the same record.
+Results are returned as base R data frames. Fields that can contain multiple
+values for one record, such as aliases or interaction sources, are represented
+as list-columns.
 
 Project source and issue tracking are available at
 <https://github.com/dgidb/r-dgidb>. The DGIdb web application is available at
@@ -71,12 +72,7 @@ the following query retrieves records for `BRAF` and `PDGFRA`:
 ```{r gene-lookup, eval = online}
 genes <- getGenes(c("BRAF", "PDGFRA"))
 
-gene_table <- data.frame(
-    gene_name = genes$gene_name,
-    gene_concept_id = genes$gene_concept_id
-)
-
-gene_table
+genes[c("gene_name", "gene_concept_id")]
 ```
 
 Some fields contain multiple values per record. Gene aliases, for example, are
@@ -95,14 +91,9 @@ its input as gene names:
 ```{r gene-interactions, eval = online}
 interactions <- getInteractions(c("BRAF", "PDGFRA"))
 
-interaction_table <- data.frame(
-    gene_name = interactions$gene_name,
-    drug_name = interactions$drug_name,
-    drug_approved = interactions$drug_approved,
-    interaction_score = interactions$interaction_score
-)
-
-head(interaction_table)
+head(interactions[c(
+    "gene_name", "drug_name", "drug_approved", "interaction_score"
+)])
 ```
 
 Interactions can also be queried starting from drug names by setting
@@ -115,11 +106,9 @@ imatinib_interactions <- getInteractions(
     approved = TRUE
 )
 
-head(data.frame(
-    gene_name = imatinib_interactions$gene_name,
-    drug_name = imatinib_interactions$drug_name,
-    interaction_score = imatinib_interactions$interaction_score
-))
+head(imatinib_interactions[c(
+    "gene_name", "drug_name", "interaction_score"
+)])
 ```
 
 Additional filters are available for source database, PubMed identifier,
@@ -135,13 +124,10 @@ Drugs\@FDA application identifiers.
 ```{r drug-lookup, eval = online}
 drugs <- getDrugs("Imatinib")
 
-data.frame(
-    drug_name = drugs$drug_name,
-    drug_concept_id = drugs$drug_concept_id,
-    approved = drugs$drug_is_approved,
-    antineoplastic = drugs$drug_is_antineoplastic,
-    immunotherapy = drugs$drug_is_immunotherapy
-)
+drugs[c(
+    "drug_name", "drug_concept_id", "drug_is_approved",
+    "drug_is_antineoplastic", "drug_is_immunotherapy"
+)]
 ```
 
 Drug searches can also be restricted by antineoplastic or immunotherapy status:
@@ -158,10 +144,7 @@ therapeutic interest. Use `getCategories()` to retrieve these annotations:
 ```{r categories, eval = online}
 categories <- getCategories("BRAF")
 
-data.frame(
-    gene_name = categories$gene_name,
-    gene_category = categories$gene_category
-)
+categories[c("gene_name", "gene_category")]
 ```
 
 # DGIdb data sources
@@ -182,11 +165,9 @@ For example, interaction sources can be queried with:
 ```{r sources, eval = online}
 sources <- getSources(sourceTypes$INTERACTION)
 
-head(data.frame(
-    source_name = sources$source_name,
-    source_version = sources$source_version,
-    interaction_claims = sources$source_interaction_claims
-))
+head(sources[c(
+    "source_name", "source_version", "source_interaction_claims"
+)])
 ```
 
 # Drugs\@FDA application information
@@ -197,13 +178,10 @@ product information from the openFDA Drugs\@FDA API.
 ```{r fda-applications, eval = online}
 applications <- getDrugApplications("Imatinib")
 
-head(data.frame(
-    drug_name = applications$drug_name,
-    application = applications$drug_product_application,
-    brand_name = applications$drug_brand_name,
-    dosage_form = applications$drug_dosage_form,
-    dosage_strength = applications$drug_dosage_strength
-))
+head(applications[c(
+    "drug_name", "drug_product_application", "drug_brand_name",
+    "drug_dosage_form", "drug_dosage_strength"
+)])
 ```
 
 # Retrieving complete gene or drug lists

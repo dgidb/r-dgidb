@@ -36,7 +36,8 @@ getInteractions(
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A named list of interaction fields aligned by position.
+A data frame of interaction records. Multi-valued fields are
+list-columns.
 }
 \description{
 Performs an interaction lookup for drugs or genes of interest.
