@@ -10,7 +10,7 @@ getAllDrugs(apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A named list containing drug names and concept identifiers.
+A data frame containing drug names and concept identifiers.
 }
 \description{
 Gets all drug names and identifiers present in DGIdb.
