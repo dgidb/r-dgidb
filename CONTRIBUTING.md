@@ -29,6 +29,7 @@ package and are located at runtime using `system.file()`.
 
 - `get_all_drugs.graphql` — Retrieve all drugs.
 - `get_all_genes.graphql` — Retrieve all genes.
+- `get_drug_applications.graphql` — Retrieve Drugs@FDA application records.
 - `get_drugs.graphql` — Retrieve specified drugs.
 - `get_gene_categories.graphql` — Retrieve gene categories.
 - `get_genes.graphql` — Retrieve specified genes.

@@ -1,6 +1,7 @@
 {
     "data": {
         "genes": {
+            "pageInfo": {"hasNextPage": false, "endCursor": null},
             "nodes": [
                 {
                     "name": "EREG",

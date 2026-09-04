@@ -1,7 +1,3 @@
-.apiEndpointUrl <- Sys.getenv(
-    "DGIDB_API_URL",
-    unset = "https://dgidb.org/api/graphql"
-)
 .fdaEndpointUrl <- "https://api.fda.gov/drug/drugsfda.json"
 
 .groupAttributes <- function(row) {
@@ -20,37 +16,6 @@
     lapply(col, function(x) {
         stats::setNames(lapply(keys, function(key) x[[key]]), keys)
     })
-}
-
-#' Send a DGIdb Query
-#'
-#' Sends a GraphQL query to DGIdb.
-#'
-#' @param apiUrl DGIdb GraphQL endpoint.
-#' @param queryFile Path to an installed GraphQL query file.
-#' @param variables Named list of GraphQL variables.
-#'
-#' @return The `data` field from the GraphQL response.
-#' @noRd
-.postQuery <- function(apiUrl, queryFile, variables) {
-    apiUrl <- if (!is.null(apiUrl)) apiUrl else .apiEndpointUrl
-    queryFilePath <- system.file(queryFile, package = "rDGIdb", mustWork = TRUE)
-    query <- readChar(
-        queryFilePath,
-        file.info(queryFilePath)$size,
-        useBytes = TRUE
-    )
-    response <- httr2::request(apiUrl) |>
-        httr2::req_headers("dgidb-client-name" = "rDGIdb") |>
-        httr2::req_body_json(list(query = query, variables = variables)) |>
-        httr2::req_timeout(30) |>
-        httr2::req_perform() |>
-        httr2::resp_body_json()
-    if (!is.null(response$errors)) {
-        messages <- vapply(response$errors, `[[`, character(1), "message")
-        stop(paste(messages, collapse = "\n"), call. = FALSE)
-    }
-    response$data
 }
 
 .columnsToDataFrame <- function(columns, listColumns = character()) {
