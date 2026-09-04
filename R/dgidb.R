@@ -53,18 +53,21 @@
     response$data
 }
 
-.asDataFrame <- function(columns, listColumns = character()) {
+.columnsToDataFrame <- function(columns, listColumns = character()) {
     columnOrder <- names(columns)
     listValues <- columns[listColumns]
-    columns[listColumns] <- NULL
+    scalarValues <- columns[setdiff(columnOrder, listColumns)]
+
     output <- as.data.frame(
-        columns,
+        scalarValues,
         optional = TRUE,
         stringsAsFactors = FALSE
     )
-    for (name in listColumns) {
-        output[[name]] <- listValues[[name]]
+
+    for (columnName in listColumns) {
+        output[[columnName]] <- listValues[[columnName]]
     }
+
     output[columnOrder]
 }
 
@@ -145,7 +148,7 @@ getDrugs <- function(
         })
     )
     output$drug_attributes <- .backfillAttributes(output$drug_attributes)
-    .asDataFrame(
+    .columnsToDataFrame(
         output,
         c(
             "drug_aliases", "drug_attributes", "drug_approval_ratings",
@@ -182,7 +185,7 @@ getGenes <- function(terms, apiUrl = NULL) {
         })
     )
     output$gene_attributes <- .backfillAttributes(output$gene_attributes)
-    .asDataFrame(output, c("gene_aliases", "gene_attributes"))
+    .columnsToDataFrame(output, c("gene_aliases", "gene_attributes"))
 }
 
 .interactionOutput <- function(results) {
@@ -225,7 +228,7 @@ getGenes <- function(terms, apiUrl = NULL) {
     output$interaction_attributes <- .backfillAttributes(
         output$interaction_attributes
     )
-    .asDataFrame(
+    .columnsToDataFrame(
         output,
         c(
             "interaction_attributes", "interaction_pmids",
@@ -334,7 +337,7 @@ getCategories <- function(terms, apiUrl = NULL) {
         gene_category = vapply(rows, `[[`, character(1), "gene_category"),
         gene_category_sources = lapply(rows, `[[`, "gene_category_sources")
     )
-    .asDataFrame(output, "gene_category_sources")
+    .columnsToDataFrame(output, "gene_category_sources")
 }
 
 #' DGIdb Source Types
@@ -400,7 +403,7 @@ getSources <- function(sourceType = NULL, apiUrl = NULL) {
             nodes, function(x) x$licenseLink, character(1)
         )
     )
-    .asDataFrame(output)
+    .columnsToDataFrame(output)
 }
 
 #' Get All Genes
@@ -422,7 +425,7 @@ getAllGenes <- function(apiUrl = NULL) {
         gene_name = vapply(nodes, function(x) x$name, character(1)),
         gene_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
     )
-    .asDataFrame(output)
+    .columnsToDataFrame(output)
 }
 
 #' Get All Drugs
@@ -444,7 +447,7 @@ getAllDrugs <- function(apiUrl = NULL) {
         drug_name = vapply(nodes, function(x) x$name, character(1)),
         drug_concept_id = vapply(nodes, function(x) x$conceptId, character(1))
     )
-    .asDataFrame(output)
+    .columnsToDataFrame(output)
 }
 
 .fdaProductRow <- function(drug, application, product) {
@@ -531,5 +534,5 @@ getDrugApplications <- function(terms, apiUrl = NULL) {
         lapply(fields, function(field) vapply(rows, `[[`, character(1), field)),
         fields
     )
-    .asDataFrame(output)
+    .columnsToDataFrame(output)
 }
