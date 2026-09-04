@@ -1,6 +1,7 @@
 {
     "data": {
         "sources": {
+            "pageInfo": {"hasNextPage": false, "endCursor": null},
             "nodes": [
                 {
                     "fullName": "NCBI Gene",
