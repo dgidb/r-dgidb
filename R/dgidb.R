@@ -93,10 +93,10 @@
 #' getDrugs("Imatinib")
 #' @export
 getDrugs <- function(
-        terms,
-        immunotherapy = NULL,
-        antineoplastic = NULL,
-        apiUrl = NULL
+  terms,
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  apiUrl = NULL
 ) {
     params <- list(names = terms)
     if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
@@ -239,15 +239,15 @@ getGenes <- function(terms, apiUrl = NULL) {
 #' )
 #' @export
 getInteractions <- function(
-        terms,
-        search = "genes",
-        immunotherapy = NULL,
-        antineoplastic = NULL,
-        source = NULL,
-        pmid = NULL,
-        interactionType = NULL,
-        approved = NULL,
-        apiUrl = NULL
+  terms,
+  search = "genes",
+  immunotherapy = NULL,
+  antineoplastic = NULL,
+  source = NULL,
+  pmid = NULL,
+  interactionType = NULL,
+  approved = NULL,
+  apiUrl = NULL
 ) {
     search <- match.arg(search, c("genes", "drugs"))
     params <- list(names = terms)
