@@ -16,7 +16,7 @@ getDrugs(terms, immunotherapy = NULL, antineoplastic = NULL, apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A data frame of drug records. Multi-valued fields are list-columns.
+A named list of drug fields aligned by position.
 }
 \description{
 Performs a record lookup in DGIdb for drugs of interest.

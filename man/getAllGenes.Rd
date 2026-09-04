@@ -10,7 +10,7 @@ getAllGenes(apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A data frame containing gene names and concept identifiers.
+A named list containing gene names and concept identifiers.
 }
 \description{
 Gets all gene names and identifiers present in DGIdb.

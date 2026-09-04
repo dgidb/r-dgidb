@@ -45,10 +45,6 @@ Load the package:
 library(rDGIdb)
 ```
 
-Query functions return base R data frames. Fields that can contain
-multiple values for one record, such as aliases or interaction sources,
-are represented as list-columns.
-
 Look up genes:
 
 ``` r

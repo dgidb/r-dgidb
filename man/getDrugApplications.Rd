@@ -12,7 +12,7 @@ getDrugApplications(terms, apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A data frame of Drugs@FDA product records.
+A named list of Drugs@FDA product fields aligned by position.
 }
 \description{
 Gets Drugs@FDA product information for DGIdb drug application records.

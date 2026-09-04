@@ -12,7 +12,7 @@ getSources(sourceType = NULL, apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A data frame of DGIdb source records.
+A named list of source fields aligned by position.
 }
 \description{
 Performs a lookup for DGIdb aggregate sources.

@@ -12,8 +12,7 @@ getCategories(terms, apiUrl = NULL)
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }
 \value{
-A data frame of gene-category records. Source names are stored in a
-list-column.
+A named list of gene-category fields aligned by position.
 }
 \description{
 Performs a category annotation lookup for genes of interest.
