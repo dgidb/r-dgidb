@@ -25,13 +25,13 @@ getInteractions(
 
 \item{antineoplastic}{Optionally filter drug searches by antineoplastic use.}
 
-\item{source}{Optionally filter by source database name.}
+\item{source}{Optionally filter interactions by source database name.}
 
 \item{pmid}{Optionally filter by PubMed identifier.}
 
 \item{interactionType}{Optionally filter by interaction type.}
 
-\item{approved}{Optionally filter drug searches by approval status.}
+\item{approved}{Optionally filter interactions by drug approval status.}
 
 \item{apiUrl}{DGIdb GraphQL endpoint; defaults to \code{DGIDB_API_URL}.}
 }

@@ -175,6 +175,35 @@ getGenes <- function(terms, apiUrl = NULL) {
     )
 }
 
+.filterInteractions <- function(nodes, source = NULL, approved = NULL) {
+    lapply(nodes, function(node) {
+        interactions <- node$interactions
+        if (!is.null(approved)) {
+            interactions <- Filter(
+                function(interaction) {
+                    identical(interaction$drug$approved, approved)
+                },
+                interactions
+            )
+        }
+        if (!is.null(source)) {
+            interactions <- Filter(
+                function(interaction) {
+                    sources <- vapply(
+                        interaction$interactionClaims,
+                        function(claim) claim$source$sourceDbName,
+                        character(1)
+                    )
+                    source %in% sources
+                },
+                interactions
+            )
+        }
+        node$interactions <- interactions
+        node
+    })
+}
+
 #' Get Interactions
 #'
 #' Performs an interaction lookup for drugs or genes of interest.
@@ -183,10 +212,10 @@ getGenes <- function(terms, apiUrl = NULL) {
 #' @param search Either `"genes"` or `"drugs"`.
 #' @param immunotherapy Optionally filter drug searches by immunotherapy use.
 #' @param antineoplastic Optionally filter drug searches by antineoplastic use.
-#' @param source Optionally filter by source database name.
+#' @param source Optionally filter interactions by source database name.
 #' @param pmid Optionally filter by PubMed identifier.
 #' @param interactionType Optionally filter by interaction type.
-#' @param approved Optionally filter drug searches by approval status.
+#' @param approved Optionally filter interactions by drug approval status.
 #' @param apiUrl DGIdb GraphQL endpoint; defaults to `DGIDB_API_URL`.
 #'
 #' @return A data frame of interaction records. Multi-valued fields are
@@ -220,10 +249,10 @@ getInteractions <- function(
 ) {
     search <- match.arg(search, c("genes", "drugs"))
     params <- list(names = terms)
-    if (!is.null(source)) params$sourceDbName <- source
     if (!is.null(pmid)) params$pmid <- pmid
     if (!is.null(interactionType)) params$interactionType <- interactionType
     if (search == "drugs") {
+        if (!is.null(source)) params$sourceDbName <- source
         if (!is.null(immunotherapy)) params$immunotherapy <- immunotherapy
         if (!is.null(antineoplastic)) params$antineoplastic <- antineoplastic
         if (!is.null(approved)) params$approved <- approved
@@ -234,6 +263,7 @@ getInteractions <- function(
         "queries/get_interactions_by_drug.graphql"
     }
     results <- .postQuery(apiUrl, queryFile, params)[[search]]$nodes
+    results <- .filterInteractions(results, source, approved)
     .interactionOutput(results)
 }
 

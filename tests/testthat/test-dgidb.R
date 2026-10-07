@@ -128,6 +128,80 @@ test_that("getInteractions() applies filters by search type", {
     expect_true(params$approved)
 })
 
+test_that("getInteractions() locally filters interactions returned for genes", {
+    local_mocked_bindings(
+        .postQuery = function(apiUrl, queryFile, variables) {
+            expect_equal(queryFile, "queries/get_interactions_by_gene.graphql")
+            expect_equal(variables, list(names = "KRAS"))
+            list(genes = list(nodes = list(list(interactions = list(
+                list(
+                    gene = list(
+                        name = "KRAS", conceptId = "hgnc:6407",
+                        longName = "KRAS proto-oncogene"
+                    ),
+                    drug = list(
+                        name = "Approved ChEMBL drug", conceptId = "drug:1",
+                        approved = TRUE
+                    ),
+                    interactionScore = 1,
+                    interactionAttributes = list(),
+                    interactionClaims = list(list(
+                        publications = list(),
+                        source = list(sourceDbName = "ChEMBL")
+                    ))
+                ),
+                list(
+                    gene = list(
+                        name = "KRAS", conceptId = "hgnc:6407",
+                        longName = "KRAS proto-oncogene"
+                    ),
+                    drug = list(
+                        name = "Unapproved drug", conceptId = "drug:2",
+                        approved = FALSE
+                    ),
+                    interactionScore = 1,
+                    interactionAttributes = list(),
+                    interactionClaims = list(list(
+                        publications = list(),
+                        source = list(sourceDbName = "DrugBank")
+                    ))
+                ),
+                list(
+                    gene = list(
+                        name = "KRAS", conceptId = "hgnc:6407",
+                        longName = "KRAS proto-oncogene"
+                    ),
+                    drug = list(
+                        name = "Approved non-ChEMBL drug", conceptId = "drug:3",
+                        approved = TRUE
+                    ),
+                    interactionScore = 1,
+                    interactionAttributes = list(),
+                    interactionClaims = list(list(
+                        publications = list(),
+                        source = list(sourceDbName = "DrugBank")
+                    ))
+                )
+            )))))
+        }
+    )
+
+    approved <- getInteractions("KRAS", approved = TRUE)
+    expect_true(all(approved$drug_approved))
+    expect_setequal(
+        approved$drug_name,
+        c("Approved ChEMBL drug", "Approved non-ChEMBL drug")
+    )
+
+    chembl <- getInteractions("KRAS", source = "ChEMBL")
+    expect_equal(chembl$drug_name, "Approved ChEMBL drug")
+    expect_true(all(vapply(
+        chembl$interaction_sources,
+        function(sources) "ChEMBL" %in% sources,
+        logical(1)
+    )))
+})
+
 test_that("getInteractionTypes() returns all interaction claim types", {
     local_mocked_bindings(
         .postQuery = function(apiUrl, queryFile, variables) {
