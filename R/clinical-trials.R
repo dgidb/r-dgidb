@@ -63,6 +63,7 @@ getClinicalTrials <- function(
                 pageSize = 1000,
                 format = "json"
             ) |>
+            httr2::req_timeout(30) |>
             httr2::req_perform() |>
             httr2::resp_body_json(simplifyVector = FALSE)
 
