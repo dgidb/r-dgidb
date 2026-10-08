@@ -1,16 +1,50 @@
 #' Get ClinicalTrials.gov studies for drug terms
 #'
-#' @param terms Character vector of drug names.
-#' @param clinicalTrialsUrl ClinicalTrials.gov v2 studies endpoint.
+#' Retrieves ClinicalTrials.gov studies matching each supplied drug term. Results
+#' are returned as one row per matching study per term. This function queries
+#' ClinicalTrials.gov directly and does not use the DGIdb GraphQL API.
 #'
-#' @return A data frame with one row per matching study per supplied drug term.
-#' Multi-value fields are represented as list-columns.
-#' @export
+#' Sites in \code{potential_sites} are limited to locations with a status of
+#' \code{RECRUITING}, \code{NOT_YET_RECRUITING}, \code{AVAILABLE},
+#' \code{TEMPORARILY_NOT_AVAILABLE}, or \code{UNKNOWN}.
+#'
+#' @param terms Character vector of drug names to search.
+#' @param clinicalTrialsUrl ClinicalTrials.gov v2 studies endpoint. Primarily
+#'   intended for testing with a mocked endpoint.
+#'
+#' @return A data frame with one row per clinical trial. The returned columns are:
+#' \describe{
+#'   \item{drug_name}{Uppercase version of the queried drug term.}
+#'   \item{trial_id}{ClinicalTrials.gov NCT identifier.}
+#'   \item{brief}{Brief study title.}
+#'   \item{study_type}{ClinicalTrials.gov study type.}
+#'   \item{min_age}{Minimum participant age, when reported.}
+#'   \item{max_age}{Maximum participant age, when reported.}
+#'   \item{age_groups}{List-column of ClinicalTrials.gov standard age groups.}
+#'   \item{pediatric}{Whether the study includes the \code{CHILD} age group.}
+#'   \item{conditions}{List-column of reported conditions.}
+#'   \item{interventions}{List-column of intervention records.}
+#'   \item{incl_excl_criteria}{Eligibility criteria text.}
+#'   \item{population_sex}{Eligible participant sex.}
+#'   \item{population_description}{Study population description, when reported.}
+#'   \item{potential_sites}{List-column of potentially enrolling locations.}
+#' }
+#'
+#' @details
+#' Fields with multiple values are stored as list-columns, consistent with other
+#' dgiR query functions. Missing scalar fields are returned as \code{NA}; missing
+#' multi-value fields are retained as \code{NULL} list-column entries.
 #'
 #' @examples
 #' \dontrun{
-#' getClinicalTrials(c("zolgensma", "imatinib"))
+#' trials <- getClinicalTrials(c("zolgensma", "GDC-0199"))
+#' trials[, c("drug_name", "trial_id", "brief", "pediatric")]
+#'
+#' # Examine locations that may be recruiting.
+#' trials$potential_sites[[1]]
 #' }
+#'
+#' @export
 getClinicalTrials <- function(
     terms,
     clinicalTrialsUrl = "https://clinicaltrials.gov/api/v2/studies"

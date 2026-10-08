@@ -148,6 +148,21 @@ with:
 vignette("dgiR")
 ```
 
+### Retrieving clinical trials
+
+`getClinicalTrials()` searches ClinicalTrials.gov directly for studies associated
+with one or more drug terms. Results are returned as a base R data frame, with
+multi-value fields such as conditions, interventions, and potentially enrolling
+sites represented as list-columns.
+
+```r
+trials <- getClinicalTrials(c("zolgensma", "GDC-0199"))
+
+trials[c("drug_name", "trial_id", "brief", "study_type", "pediatric")]
+
+# Potentially enrolling locations for the first returned study
+trials$potential_sites[[1]]
+
 ## Migrating from the legacy interface
 
 For replacements for `queryDGIdb()` and the legacy result accessors, see
