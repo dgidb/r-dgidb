@@ -236,6 +236,22 @@ Application identifiers are deduplicated and queried in batches within each
 call. Drugs\@FDA data are intended for research and should not be used as the
 sole basis for medical decisions.
 
+## ClinicalTrials.gov studies
+
+In addition to DGIdb and Drugs@FDA data, dgiR can retrieve studies from
+ClinicalTrials.gov for drug terms of interest. `getClinicalTrials()` searches
+ClinicalTrials.gov directly; therefore, this function does not require a DGIdb
+GraphQL endpoint or an API key.
+
+```{r clinical-trials, eval=FALSE}
+trials <- getClinicalTrials(c("zolgensma", "GDC-0199"))
+
+trials[c(
+    "drug_name", "trial_id", "brief", "study_type",
+    "min_age", "max_age", "pediatric"
+)]
+```
+
 # Retrieving complete gene or drug lists
 
 `getAllGenes()` and `getAllDrugs()` retrieve all gene or drug names and concept

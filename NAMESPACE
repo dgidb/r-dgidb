@@ -3,6 +3,7 @@
 export(getAllDrugs)
 export(getAllGenes)
 export(getCategories)
+export(getClinicalTrials)
 export(getDrugApplications)
 export(getDrugs)
 export(getGenes)
